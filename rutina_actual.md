@@ -1,12 +1,30 @@
 # Rutina actual — Bloque 1 (Semanas 1–4) · Acumulación base
 
-> **Estado:** PROVISIONAL hasta confirmar pierna rezagada, días de partido y marcas actuales (ver `perfil.md`).
+> **Estado:** pierna rezagada (izquierda) y calendario de partidos confirmados. Faltan las marcas actuales para fijar cargas (ver `perfil.md`).
 > **Inicio:** semana del 2026-11-23 · **Semana 1 = calibración**: usar el RIR objetivo para encontrar reps reales y registrarlas.
 
-## Estructura semanal (supuesto: partido sábado o domingo)
+## Estructura semanal — anclada al día de partido (MD)
 
-| Día | Sesión | Nota de fatiga |
+Los partidos son martes o miércoles, así que la semana se organiza **contando desde el partido**, no por días fijos:
+
+| Día relativo | Sesión | Razón |
 |---|---|---|
+| **MD-1** | **Torso A** a RIR 2 (sin fallo) | El torso no resta a sprints ni a cambios de dirección |
+| **MD** | Partido | |
+| **MD+1** | Descanso / recuperación activa (caminar, movilidad) | Pico de daño muscular y fatiga del SNC |
+| **MD+2** | **Pierna A** (cuádriceps, unilateral) | La sesión más pesada de pierna, lo más lejos posible del siguiente partido |
+| **MD+3** | **Torso B** | |
+| **MD+4** (nunca después de MD-3) | **Pierna B** (posterior + prevención) | Baja fatiga |
+
+**Semana con partido el martes:** Lun Torso A · **Mar partido** · Mié descanso · Jue Pierna A · Vie Torso B · Sáb Pierna B · Dom descanso
+**Semana con partido el miércoles:** Mar Torso A · **Mié partido** · Jue descanso · Vie Pierna A · Sáb Torso B · Dom Pierna B · Lun descanso
+**Si el siguiente partido cae pronto** (por ejemplo, de miércoles a martes): Pierna B se hace como mínimo en MD-3; si no cabe, se fusiona en Pierna A (split squat + nórdicos + Copenhague).
+
+**Unilaterales:** empezar SIEMPRE con la **pierna IZQUIERDA [R]**. La derecha hace exactamente las mismas reps, nunca más. La izquierda lleva **+1 serie** en el ejercicio principal de cuádriceps.
+
+**Tempo:** notación excéntrica-pausa abajo-concéntrica-pausa arriba (ej. 3-1-X-0; X = explosivo).
+
+---|---|---|
 | Lunes | **Torso A** (prioridad empuje horizontal + tirón vertical) | Día post-partido: torso no compite con piernas |
 | Martes | **Pierna A** (dominante cuádriceps, unilateral) | Sesión de pierna más exigente, lejos del partido |
 | Miércoles | Descanso / práctica de fútbol | |
@@ -58,7 +76,7 @@
 | 5 | Remo pecho apoyado en banco inclinado (2×19 kg) | 3 | 12–15 | 1 | 1:30 | Elimina la trampa lumbar: aísla dorsal/trapecio medio |
 | 6 | Extensión francesa a dos manos (1×22 kg) | 3 | 10–15 | 1 | 1:30 | Sentado, codos arriba: porción larga del tríceps en estiramiento |
 
-## PIERNA B (posterior + prevención — baja fatiga, 24–48 h antes de partido)
+## PIERNA B (posterior + prevención — baja fatiga, ≥ MD-3)
 
 **Calentamiento (8 min):** movilidad de cadera 90/90 + 10 puentes de glúteo + 10 sentadillas goblet ligeras.
 
@@ -66,7 +84,7 @@
 |---|---|---|---|---|---|---|
 | 1 | Hip thrust unilateral en banco (22 kg) | 3/lado | 10–15 | 2 | 1:30 | [R] primero |
 | 2 | Split squat (pie trasero en suelo) (2×19 kg) | **[R] 3 / fuerte 2** | 10–12 | **3** | 1:30 | Volumen extra para la pierna rezagada sin generar daño muscular previo al partido |
-| 3 | Curl nórdico excéntrico (pies anclados bajo el banco) | 3 | 3–6 | — | 2:00 | Solo excéntrica, 3–5 s de bajada. Evidencia sólida para reducir lesiones de isquios en fútbol. Si el partido es al día siguiente → 2 series |
+| 3 | Curl nórdico excéntrico (pies anclados bajo el banco) | 3 | 3–6 | — | 2:00 | Solo excéntrica, 3–5 s de bajada. Evidencia sólida para reducir lesiones de isquios en fútbol. Si cae a MD-3 justo → 2 series |
 | 4 | Plancha Copenhague | 3/lado | 15–30 s | — | 1:00 | Aductores: prevención de pubalgia/lesión de aductor en cambios de dirección |
 | 5 | Gemelo sentado (22 kg sobre rodilla) | 3 | 15–20 | 1 | 1:00 | Sóleo: clave en aceleraciones |
 
@@ -81,7 +99,7 @@
    4. Siguiente variante más difícil (ej. press plano → press con déficit o unilateral).
 2. **Dominadas y fondos:** al lograr **4×10 (dominadas) / 4×12 (fondos)** con RIR 1–2 → añadir lastre (mochila con 5 kg, luego mancuerna 19 kg entre las piernas/cinturón) y volver a 4×6.
 3. **Pierna rezagada:** si la diferencia de reps con el mismo peso es ≥2, mantener la serie extra para [R]. Re-evaluar cada 4 semanas.
-4. **Partido o sesión exigente en las 48 h previas:** Pierna A/B → RIR +1, eliminar última serie de cada ejercicio. Torso no se toca salvo fatiga general alta.
+4. **Pierna A en MD+2 con agujetas fuertes o fatiga alta tras el partido:** RIR +1 y quitar la última serie de cada ejercicio (la serie extra de la izquierda se mantiene). **Torso A en MD-1:** RIR 2, nunca al fallo.
 5. **Semana 5:** descarga (–40 % series, RIR 3–4) y re-test.
 
 ## Nutrición práctica alrededor del entreno (sin cambiar tu ventana)
