@@ -1,5 +1,7 @@
 # Rutina actual — Bloque 1 (Semanas 1–4) · Acumulación base
 
+📸 **Versión con fotos de cada ejercicio:** https://claude.ai/artifact/BkVqYpoYEhUNBiRosEME5P
+
 > **Estado:** pierna rezagada (izquierda) y calendario de partidos confirmados. Faltan las marcas actuales para fijar cargas (ver `perfil.md`).
 > **Inicio:** semana del 2026-11-23 · **Semana 1 = calibración**: usar el RIR objetivo para encontrar reps reales y registrarlas.
 
@@ -107,3 +109,9 @@ Los partidos son martes o miércoles, así que la semana se organiza **contando 
 - Entreno **antes de las 10:00 (en ayunas)**: posible para torso; para Pierna A conviene moverla después de la primera comida o evaluar rendimiento en el log.
 - Creatina: dosis diaria constante; el horario es secundario.
 - Superávit: objetivo de subida ~0,25–0,5 % del peso/semana (≈0,2–0,4 kg/sem a 76 kg). Ajustar en Fitia según media semanal de peso.
+
+## Día de partido (ej. martes 24-nov, 7:00 PM)
+- **10:00** Ruptura del ayuno habitual + creatina.
+- **14:30–15:00** Comida principal (~4 h antes): rica en carbohidratos, proteína moderada, poca grasa/fibra.
+- **17:30–18:00** Snack de carbohidrato ligero si hay hambre (banano o crema de arroz pequeña).
+- **~21:00–21:30** Comida post-partido con proteína + carbohidratos. Ese día la ventana cierra más tarde (manda la recuperación); al día siguiente ruptura 10:00–11:00.
