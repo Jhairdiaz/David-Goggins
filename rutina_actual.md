@@ -73,6 +73,19 @@ Los partidos son martes o miércoles, así que la semana se organiza **contando 
 | 4 | Peso muerto rumano (2×22 kg) | 3 | 10–15 | 2 | 2:00 | Cadera atrás, tempo 3-1-1-0, estiramiento de isquios |
 | 5 | Gemelo de pie unilateral (22 kg) | 3/lado | 10–15 | 1 | 1:00 | Pausa 2 s abajo en estiramiento máximo |
 
+### Ajuste PROVISIONAL de Pierna A por la rodilla izquierda (tipo tendinitis rotuliana, 24-nov)
+*Hasta confirmar los detalles del dolor. No es un diagnóstico: si hay hinchazón, bloqueo, fallos de la rodilla, dolor en reposo o nocturno, o no mejora en 4–6 semanas → fisioterapeuta.*
+
+**Regla del dolor (manda sobre todo lo demás):** durante el ejercicio, dolor ≤ 3/10 es aceptable. A la mañana siguiente la rodilla debe estar igual o mejor que antes. Si está peor → la siguiente sesión baja carga o rango.
+
+| Cambio | Por qué |
+|---|---|
+| Calentamiento: **quitar los saltos al cajón**. Añadir **isométrico**: sentadilla en pared 4–5 × 30–45 s (profundidad con dolor ≤ 3/10), 1–2 min de descanso | Los saltos son la carga más alta para el tendón rotuliano. Los isométricos permiten cargar el tendón con buena tolerancia |
+| Sentadilla búlgara: tempo **3-0-3** (lento subiendo y bajando), rango hasta donde el dolor sea ≤ 3/10. Izquierda primero; su serie extra solo si la regla del dolor lo permite | Carga lenta y pesada: el enfoque con mejor respaldo para tendinopatía rotuliana, y sigue trabajando el cuádriceps izquierdo |
+| Goblet con talones elevados → **sentadilla goblet al banco** (22 kg, tempo 3-1-3) | Talones elevados + flexión profunda = máxima carga en el tendón rotuliano. Al banco se controla la profundidad |
+| Step-up: tempo 3-0-2, sin impulso | Bien tolerado y regulable con la altura del banco |
+| Peso muerto rumano y gemelos: sin cambios | No cargan el tendón rotuliano |
+
 ## TORSO B
 
 **Calentamiento (8 min):** igual que Torso A + 2×5 fondos lentos a medio rango.

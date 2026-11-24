@@ -7,7 +7,8 @@
 | Prioridades | Press de pecho lastrado/pesado, dominadas, equilibrar cuádriceps izq/der |
 | Deporte | Fútbol 11 — #10 / mediapunta ofensivo (sprints repetidos, cambios de dirección, aceleraciones) |
 | Split | 4 días Torso / Pierna |
-| Pierna rezagada (cuádriceps) | **Izquierda** |
+| Pierna rezagada (cuádriceps) | **Izquierda** (pierna buena/dominante: **derecha**) |
+| Molestias | **Rodilla izquierda: dolor tipo tendinitis rotuliana** (reportado 2026-11-24, sin diagnóstico). Pendiente: intensidad 0–10, localización, desde cuándo, qué lo provoca |
 | Partidos | **Martes o miércoles** (varía cada semana). Semana del 23-nov: martes 24, **7:00 PM** |
 | Equipamiento | Mancuernas de 10, 15, 19 y 22 kg (pares), banco, barra de dominadas/fondos, **chaleco lastrado hasta 20 kg** (usado hasta 10 kg) |
 | Nutrición | Ayuno 20:00–10:00 entre semana (14 h), flexible fin de semana |
@@ -25,5 +26,6 @@
 ## Datos pendientes (completar)
 - [ ] Hora habitual de entrenamiento (¿antes o después de las 10:00?)
 - [ ] ¿Tienes mochila/cinturón para lastre? ¿Bandas elásticas?
-- [ ] Molestias o lesiones previas (rodilla, aductor, isquios, hombro)
+- [x] Molestias: rodilla izq. tipo tendinitis rotuliana (ver arriba). Faltan detalles
+- [ ] ¿Otras lesiones previas (aductor, isquios, hombro)?
 - [ ] Altura, edad y calorías/macros actuales en Fitia (opcional, para ajustar superávit)
