@@ -3,7 +3,8 @@
   var PLAN = JSON.parse(document.getElementById("plan").textContent);
   var TABS = ["torso-a", "pierna-a", "torso-b", "pierna-b", "progreso", "progresion", "partido"];
   var BY_DATE = { "2026-11-23": "torso-a", "2026-11-24": "partido", "2026-11-25": "pierna-a", "2026-11-26": "pierna-a", "2026-11-27": "torso-b", "2026-11-28": "pierna-b" };
-  var LEVELS = [[0, "Cantera"], [300, "Suplente"], [800, "Titular"], [1500, "Capitán"], [2500, "Crack"], [4000, "Figura"], [6000, "Leyenda"]];
+  var RANKS = [[0, "E"], [400, "D"], [1000, "C"], [2000, "B"], [3500, "A"], [5500, "S"], [8000, "SS"]];
+  var XP_LEVEL = 100;
   var WEEK_GOAL = 4;
   var XP_SET = 10, XP_PR = 25, XP_SESSION = 50, XP_WEEK = 100;
   var SESSION_NAME = {};
@@ -104,21 +105,23 @@
     var legsWeek = Object.keys(weekSes).some(function (w) { return weekSes[w]["pierna-a"] && weekSes[w]["pierna-b"]; });
     var fullWeek = Object.keys(weeks).some(function (w) { return weeks[w] >= WEEK_GOAL; });
     var badges = [
-      { id: "primer", name: "Primer pitazo", desc: "Termina tu primera sesión", ok: sessionsDone >= 1 },
-      { id: "record", name: "Primer récord", desc: "Supera una marca anterior", ok: prs >= 1 },
-      { id: "lastre", name: "Lastre puesto", desc: "Dominadas o fondos con chaleco", ok: lastre },
-      { id: "izq", name: "Izquierda al día", desc: "Pierna A y Pierna B en la misma semana", ok: legsWeek },
-      { id: "semana", name: "Semana completa", desc: "4 sesiones en una semana", ok: fullWeek },
-      { id: "racha3", name: "Racha de 3", desc: "3 semanas completas seguidas", ok: streak >= 3 },
-      { id: "cien", name: "100 series", desc: "Registra 100 series", ok: sets >= 100 },
-      { id: "diez", name: "10 récords", desc: "Suma 10 récords personales", ok: prs >= 10 }
+      { id: "primer", name: "Despertado", desc: "Completa tu primera misión", ok: sessionsDone >= 1 },
+      { id: "record", name: "Rompe límites", desc: "Supera una marca anterior", ok: prs >= 1 },
+      { id: "lastre", name: "Peso extra", desc: "Dominadas o fondos con chaleco", ok: lastre },
+      { id: "izq", name: "Pierna izquierda despierta", desc: "Pierna A y Pierna B en la misma semana", ok: legsWeek },
+      { id: "semana", name: "Semana perfecta", desc: "4 misiones en una semana", ok: fullWeek },
+      { id: "racha3", name: "Imparable", desc: "3 semanas perfectas seguidas", ok: streak >= 3 },
+      { id: "cien", name: "Cien series", desc: "Registra 100 series", ok: sets >= 100 },
+      { id: "diez", name: "Diez récords", desc: "Suma 10 récords personales", ok: prs >= 10 }
     ];
-    return { xp: xp, prs: prs, sets: sets, per: per, weeks: weeks, streak: streak, week: weeks[cur] || 0, badges: badges, hist: hist, list: list };
+    var torso = 0, pierna = 0;
+    list.forEach(function (d) { var s = d.sets || {}; Object.keys(s).forEach(function (ex) { var n = (s[ex] || []).filter(function (r) { return r && r.done; }).length; if (ex.indexOf("torso") === 0) torso += n; else pierna += n; }); });
+    return { xp: xp, prs: prs, sets: sets, per: per, weeks: weeks, streak: streak, week: weeks[cur] || 0, badges: badges, hist: hist, list: list, torso: torso, pierna: pierna, done: sessionsDone };
   }
   function levelOf(xp) {
-    var i = 0; while (i + 1 < LEVELS.length && xp >= LEVELS[i + 1][0]) i++;
-    var next = LEVELS[i + 1] || null, base = LEVELS[i][0];
-    return { n: i + 1, name: LEVELS[i][1], base: base, next: next, pct: next ? (xp - base) / (next[0] - base) : 1 };
+    var lvl = Math.floor(xp / XP_LEVEL) + 1, r = 0;
+    while (r + 1 < RANKS.length && xp >= RANKS[r + 1][0]) r++;
+    return { n: lvl, rank: RANKS[r][1], rankIdx: r, nextRank: RANKS[r + 1] || null, toNext: lvl * XP_LEVEL - xp, pct: (xp % XP_LEVEL) / XP_LEVEL };
   }
   function lastSetsFor(ex, excludeKey) {
     var list = allDocs(excludeKey).filter(function (d) { return d.sets && d.sets[ex] && d.sets[ex].some(function (r) { return r && r.done; }); });
@@ -135,12 +138,12 @@
     return repTxt + (kgTxt ? " · " + kgTxt : "") + (rir !== null && rir !== undefined && rir !== "" ? " · RIR " + rir : "");
   }
 
-  /* ---------- Render: cabecera, semana, progreso ---------- */
+  /* ---------- Render: cabecera, semana, estado ---------- */
   function renderStats() {
     var c = compute(allDocs()), lv = levelOf(c.xp);
-    $("#st-lvnum").textContent = lv.n; $("#st-lvname").textContent = lv.name;
+    $("#st-lvnum").textContent = lv.n; $("#st-lvname").textContent = "Rango " + lv.rank;
     $("#st-xpbar").style.width = Math.round(lv.pct * 100) + "%";
-    $("#st-xptext").textContent = lv.next ? c.xp + " XP · faltan " + (lv.next[0] - c.xp) + " para " + lv.next[1] : c.xp + " XP · nivel máximo";
+    $("#st-xptext").textContent = c.xp + " EXP · faltan " + lv.toNext + " para el nivel " + (lv.n + 1);
     $("#st-streak").textContent = c.streak; $("#st-streak-u").textContent = c.streak === 1 ? "semana" : "semanas";
     $("#st-week").textContent = Math.min(c.week, 9);
     $all("#st-pips span").forEach(function (p, i) { p.classList.toggle("on", i < c.week); });
@@ -149,21 +152,25 @@
       var d = el.getAttribute("data-date");
       el.classList.toggle("done", c.list.some(function (x) { return x.fecha === d && x.completada; }));
     });
-    // Mi progreso
-    $("#pg-lvnum").textContent = lv.n; $("#pg-lvname").textContent = lv.name;
-    $("#pg-lvnext").textContent = lv.next ? c.xp + " XP · " + (lv.next[0] - c.xp) + " XP para " + lv.next[1] : c.xp + " XP";
+    $("#pg-lvnum").textContent = lv.n; $("#pg-lvname").textContent = "Nivel " + lv.n + " · Rango " + lv.rank;
+    $("#pg-lvnext").textContent = c.xp + " EXP · " + lv.toNext + " para el nivel " + (lv.n + 1) + (lv.nextRank ? " · rango " + lv.nextRank[1] + " a los " + lv.nextRank[0] + " EXP" : "");
     $("#pg-xpbar").style.width = Math.round(lv.pct * 100) + "%";
+    var at = $("#pg-attrs"); at.textContent = "";
+    [["FUE", c.torso, "series de torso"], ["POT", c.pierna, "series de pierna"], ["VIT", c.done, "misiones completadas"], ["VOL", c.prs, "récords personales"]].forEach(function (x) {
+      var dv = document.createElement("div"), dt = document.createElement("dt"), dd = document.createElement("dd"), sm = document.createElement("small");
+      dt.textContent = x[0]; dd.textContent = x[1]; sm.textContent = x[2]; dv.appendChild(dt); dv.appendChild(dd); dv.appendChild(sm); at.appendChild(dv);
+    });
     var lad = $("#pg-ladder"); lad.textContent = "";
-    LEVELS.forEach(function (L, i) {
-      var li = document.createElement("li"); li.className = i + 1 < lv.n ? "past" : i + 1 === lv.n ? "now" : "";
-      var b = document.createElement("b"); b.textContent = L[1]; var s = document.createElement("span"); s.textContent = L[0] + " XP";
+    RANKS.forEach(function (R, i) {
+      var li = document.createElement("li"); li.className = i < lv.rankIdx ? "past" : i === lv.rankIdx ? "now" : "";
+      var b = document.createElement("b"); b.textContent = R[1]; var s = document.createElement("span"); s.textContent = R[0] + " EXP";
       li.appendChild(b); li.appendChild(s); lad.appendChild(li);
     });
     var bl = $("#pg-badges"); bl.textContent = "";
     c.badges.forEach(function (bd) {
       var li = document.createElement("li"); li.className = bd.ok ? "ok" : "";
       li.innerHTML = '<span class="bd-ico" aria-hidden="true"><svg viewBox="0 0 20 20"><path d="M10 1.5 12.4 6l5 .7-3.6 3.5.9 5L10 12.8 5.3 15.2l.9-5L2.6 6.7l5-.7L10 1.5Z" fill="currentColor"/></svg></span><b></b><span class="bd-d"></span>';
-      li.querySelector("b").textContent = bd.name; li.querySelector(".bd-d").textContent = bd.ok ? "Desbloqueado" : bd.desc;
+      li.querySelector("b").textContent = bd.name; li.querySelector(".bd-d").textContent = bd.ok ? "Título obtenido" : bd.desc;
       bl.appendChild(li);
     });
     var tb = $("#pg-hist"), rows = c.list.slice().reverse();
@@ -171,13 +178,12 @@
       tb.textContent = "";
       rows.forEach(function (d) {
         var p = c.per[d.fecha + "_" + d.sesion], tr = document.createElement("tr");
-        [fmtDate(d.fecha), (SESSION_NAME[d.sesion] || d.sesion) + (d.completada ? "" : " (en curso)"), String(p.sets), String(p.prs.length), "+" + p.xp].forEach(function (v, i) {
+        [fmtDate(d.fecha), (SESSION_NAME[d.sesion] || d.sesion) + (d.completada ? "" : " (en curso)"), String(p.sets), String(p.prs.length), "+" + p.xp + " EXP"].forEach(function (v, i) {
           var td = document.createElement("td"); td.textContent = v; if (i === 4) td.className = "xp"; tr.appendChild(td);
         });
         tb.appendChild(tr);
       });
     }
-    // Última vez dinámica
     $all("[data-last]").forEach(function (b) {
       var ex = b.getAttribute("data-last"), l = lastSetsFor(ex, docId(PLAN.ex[ex].s));
       if (l) { b.textContent = summarize(l.sets, ex) + " · " + fmtDate(l.fecha); b.parentNode.classList.remove("first"); }
@@ -187,46 +193,55 @@
   function renderSessionProgress(s) {
     var box = $('[data-sprog="' + s.id + '"]'); if (!box) return;
     var total = 0, done = 0, d = drafts[s.id] || remote[docId(s.id)];
-    s.ex.forEach(function (ex) { total += PLAN.ex[ex].rows.length; if (d && d.sets && d.sets[ex]) done += d.sets[ex].filter(function (r) { return r && r.done; }).length; });
-    $(".sbar i", box).style.width = Math.round(done / total * 100) + "%";
+    s.ex.forEach(function (ex) { var rows = getRows(ex); total += rows.length; done += rows.filter(function (r) { return r && r.done; }).length; });
+    $(".sbar i", box).style.width = (total ? Math.round(done / total * 100) : 0) + "%";
     var c = compute(allDocs()), p = c.per[docId(s.id)];
-    $(".stext", box).textContent = (!loaded || !canWrite) ? "Registra tus series para sumar XP" :
-      done + " de " + total + " series hoy" + (p ? " · +" + p.xp + " XP" : "") + (d && d.completada ? " · sesión terminada" : "");
+    $(".stext", box).textContent = (!loaded || !canWrite) ? "Misión: registra tus series para ganar EXP" :
+      "Progreso de la misión: " + done + " / " + total + " series" + (p ? " · +" + p.xp + " EXP" : "") + (d && d.completada ? " · completada" : "");
     var fin = $('[data-finish="' + s.id + '"]'), re = $('[data-reopen="' + s.id + '"]');
     var completed = !!(d && d.completada);
     fin.disabled = !loaded || !canWrite || completed || done === 0;
-    fin.textContent = completed ? "Sesión terminada" : "Terminar sesión";
+    fin.textContent = completed ? "Misión completada" : "Completar misión";
     re.hidden = !completed || !canWrite;
   }
 
   /* ---------- Render: registro de series ---------- */
+  function getRows(exId) {
+    var e = PLAN.ex[exId], d = drafts[e.s] || remote[docId(e.s)], arr = d && d.sets && d.sets[exId];
+    var tpl = e.rows.map(function (r) { return { serie: r[0], lado: r[1] }; });
+    if (!arr || !arr.length) return tpl;
+    var n = Math.max(arr.length, 0), out = [];
+    for (var i = 0; i < n; i++) out.push(arr[i] || tpl[i] || { serie: i + 1, lado: null });
+    return out;
+  }
   function renderLogger(exId) {
     var e = PLAN.ex[exId], box = $('.log[data-ex="' + exId + '"]'); if (!box) return;
-    var ready = loaded && canWrite;
-    var d = ready ? (drafts[e.s] || remote[docId(e.s)]) : null, saved = (d && d.sets && d.sets[exId]) || [];
+    var ready = loaded && canWrite, rows = getRows(exId);
     var last = lastSetsFor(exId, docId(e.s)), lastSets = last ? last.sets : [];
-    var doneN = saved.filter(function (r) { return r && r.done; }).length;
-    var h = '<div class="log-h"><span class="lbl">Registro de hoy</span><span class="log-c">' + doneN + " / " + e.rows.length + " series</span></div>";
+    var doneN = rows.filter(function (r) { return r && r.done; }).length;
+    var h = '<div class="log-h"><span class="lbl">Series de hoy</span><span class="log-c">' + doneN + " / " + rows.length + " series</span></div>";
     h += '<div class="lgrid" role="group" aria-label="Series de ' + e.name.replace(/"/g, "") + '">';
-    h += '<span class="lgh">Serie</span><span class="lgh">' + (e.lastre ? "Lastre kg" : "kg") + '</span><span class="lgh">' + (e.secs ? "Seg" : "Reps") + '</span><span class="lgh">RIR</span><span class="lgh"></span>';
-    e.rows.forEach(function (row, i) {
-      var r = saved[i] || {}, prev = lastSets[i] || null;
+    h += '<span class="lgh">Serie</span><span class="lgh">' + (e.lastre ? "Lastre kg" : "kg") + '</span><span class="lgh">' + (e.secs ? "Seg" : "Reps") + '</span><span class="lgh">RIR</span><span class="lgh"></span><span class="lgh"></span>';
+    var dis = ready ? "" : " disabled";
+    rows.forEach(function (r, i) {
+      var prev = lastSets[i] || null;
       var kg = r.kg !== undefined ? r.kg : (prev ? prev.kg : e.kg);
       var reps = r.reps !== undefined ? r.reps : (prev ? prev.reps : e.repsMin);
       var rir = r.rir !== undefined ? r.rir : (e.rir === null ? "" : e.rir);
-      var side = row[1] ? '<em class="' + row[1] + '">' + (row[1] === "izq" ? "Izq" : "Der") + "</em>" : "";
-      var dis = ready ? "" : " disabled";
-      var idb = exId + "-" + i;
-      h += '<span class="sn' + (r.done ? " done" : "") + '" data-i="' + i + '">S' + row[0] + side + "</span>";
-      h += '<input id="kg-' + idb + '" data-f="kg" data-i="' + i + '" type="number" inputmode="decimal" step="0.5" min="0" value="' + num(kg) + '" aria-label="Serie ' + row[0] + ' kg"' + (r.done ? ' class="done"' : "") + dis + ">";
-      h += '<input id="rp-' + idb + '" data-f="reps" data-i="' + i + '" type="number" inputmode="numeric" step="1" min="0" value="' + num(reps) + '" aria-label="Serie ' + row[0] + (e.secs ? " segundos" : " repeticiones") + '"' + (r.done ? ' class="done"' : "") + dis + ">";
-      h += '<select id="ri-' + idb + '" data-f="rir" data-i="' + i + '" aria-label="Serie ' + row[0] + ' RIR"' + (r.done ? ' class="done"' : "") + dis + ">";
+      var side = r.lado ? '<em class="' + r.lado + '">' + (r.lado === "izq" ? "Izq" : "Der") + "</em>" : "";
+      var dn = r.done ? ' class="done"' : "", idb = exId + "-" + i;
+      h += '<span class="sn' + (r.done ? " done" : "") + '" data-i="' + i + '" data-serie="' + num(r.serie) + '" data-lado="' + (r.lado || "") + '">S' + num(r.serie) + side + "</span>";
+      h += '<input id="kg-' + idb + '" data-f="kg" data-i="' + i + '" type="number" inputmode="decimal" step="0.5" min="0" value="' + num(kg) + '" aria-label="Serie ' + num(r.serie) + ' kg"' + dn + dis + ">";
+      h += '<input id="rp-' + idb + '" data-f="reps" data-i="' + i + '" type="number" inputmode="numeric" step="1" min="0" value="' + num(reps) + '" aria-label="Serie ' + num(r.serie) + (e.secs ? " segundos" : " repeticiones") + '"' + dn + dis + ">";
+      h += '<select id="ri-' + idb + '" data-f="rir" data-i="' + i + '" aria-label="Serie ' + num(r.serie) + ' RIR"' + dn + dis + ">";
       ["", "0", "1", "2", "3", "4"].forEach(function (v) { h += '<option value="' + v + '"' + (String(rir) === v ? " selected" : "") + ">" + (v === "" ? "—" : v === "4" ? "4+" : v) + "</option>"; });
       h += "</select>";
-      h += '<button type="button" class="chk' + (r.done ? " on" : "") + '" data-i="' + i + '" aria-pressed="' + (r.done ? "true" : "false") + '" aria-label="Marcar serie ' + row[0] + ' como hecha"' + dis + '><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5 6.5 12 13 4.5" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>';
+      h += '<button type="button" class="chk' + (r.done ? " on" : "") + '" data-i="' + i + '" aria-pressed="' + (r.done ? "true" : "false") + '" aria-label="Marcar serie ' + num(r.serie) + ' como hecha"' + dis + '><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5 6.5 12 13 4.5" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>';
+      h += '<button type="button" class="del" data-del="' + i + '" aria-label="Eliminar serie ' + num(r.serie) + '"' + dis + '><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M4 4l8 8M12 4l-8 8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button>';
     });
     h += "</div>";
-    if (!ready) h += '<p class="log-off">' + (loaded ? "Solo tú puedes registrar series en esta página." : "El registro se activa al abrir la página con tu cuenta de Claude.") + "</p>";
+    if (ready) h += '<button type="button" class="addset" data-add="' + exId + '"><svg viewBox="0 0 12 12" aria-hidden="true"><path d="M6 1v10M1 6h10" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>Añadir serie</button>';
+    else h += '<p class="log-off">' + (loaded ? "Solo tú puedes registrar series en esta página." : "El registro se activa al abrir la página con tu cuenta de Claude.") + "</p>";
     box.innerHTML = h;
   }
   function renderAllLoggers() { Object.keys(PLAN.ex).forEach(renderLogger); }
@@ -256,6 +271,21 @@
   }
 
   /* ---------- Interacción ---------- */
+  function materialize(exId, box) {
+    var e = PLAN.ex[exId], d = draftFor(e.s), old = d.sets[exId] || [];
+    var arr = $all(".sn[data-i]", box).map(function (sn) {
+      var i = +sn.getAttribute("data-i"), prev = old[i];
+      if (prev && prev.done) return prev;
+      var rv = $('[data-f="rir"][data-i="' + i + '"]', box).value;
+      return { serie: +sn.getAttribute("data-serie"), lado: sn.getAttribute("data-lado") || null,
+        kg: num($('[data-f="kg"][data-i="' + i + '"]', box).value), reps: num($('[data-f="reps"][data-i="' + i + '"]', box).value), rir: rv === "" ? "" : +rv, done: false };
+    });
+    d.sets[exId] = arr; return arr;
+  }
+  function renumber(arr) {
+    var cnt = { izq: 0, der: 0 }, n = 0;
+    arr.forEach(function (r) { if (r.lado) r.serie = ++cnt[r.lado]; else r.serie = ++n; });
+  }
   document.addEventListener("change", function (ev) {
     var el = ev.target, box = el.closest && el.closest(".log[data-ex]"); if (!box || !loaded || !canWrite) return;
     var exId = box.getAttribute("data-ex"), e = PLAN.ex[exId], i = +el.getAttribute("data-i"), d = draftFor(e.s);
@@ -264,34 +294,39 @@
     save(e.s); renderStats();
   });
   document.addEventListener("click", function (ev) {
-    var chk = ev.target.closest && ev.target.closest(".chk");
+    var t = ev.target.closest ? ev.target : null; if (!t) return;
+    var chk = t.closest(".chk");
     if (chk && loaded && canWrite) { toggleSet(chk); return; }
-    var fin = ev.target.closest && ev.target.closest("[data-finish]");
+    var add = t.closest("[data-add]");
+    if (add && loaded && canWrite) { addSet(add.getAttribute("data-add")); return; }
+    var del = t.closest("[data-del]");
+    if (del && loaded && canWrite) { delSet(del); return; }
+    var fin = t.closest("[data-finish]");
     if (fin && !fin.disabled) { finishSession(fin.getAttribute("data-finish")); return; }
-    var re = ev.target.closest && ev.target.closest("[data-reopen]");
+    var re = t.closest("[data-reopen]");
     if (re) { var d = draftFor(re.getAttribute("data-reopen")); d.completada = false; delete d.completedAt; save(d.sesion, true); renderStats(); return; }
+    if (t.closest("#toast-undo") && undoFn) { var f = undoFn; undoFn = null; hideToast(); f(); }
   });
   function toggleSet(btn) {
     var box = btn.closest(".log[data-ex]"), exId = box.getAttribute("data-ex"), e = PLAN.ex[exId], i = +btn.getAttribute("data-i");
-    var d = draftFor(e.s), arr = d.sets[exId] = d.sets[exId] || [];
-    while (arr.length <= i) arr.push(null);
-    if (arr[i] && arr[i].done) {
-      arr[i].done = false;
+    var arr = materialize(exId, box), r = arr[i];
+    if (r.done) {
+      r.done = false;
     } else {
-      var kg = num($('[data-f="kg"][data-i="' + i + '"]', box).value), reps = num($('[data-f="reps"][data-i="' + i + '"]', box).value);
+      var before = compute(allDocs()), lvB = levelOf(before.xp);
       var rv = $('[data-f="rir"][data-i="' + i + '"]', box).value;
-      var before = compute(allDocs()).xp;
-      arr[i] = { serie: e.rows[i][0], lado: e.rows[i][1], kg: kg, reps: reps, rir: rv === "" ? "" : +rv, done: true, t: new Date().toISOString() };
-      var after = compute(allDocs());
-      var pr = (after.per[docId(e.s)] || { prs: [] }).prs.some(function (p) { return p.ex === exId && p.kg === kg && p.reps === reps; });
-      pop(btn, "+" + (after.xp - before) + " XP" + (pr ? " · récord" : ""), pr);
+      r.kg = num($('[data-f="kg"][data-i="' + i + '"]', box).value); r.reps = num($('[data-f="reps"][data-i="' + i + '"]', box).value);
+      r.rir = rv === "" ? "" : +rv; r.done = true; r.t = new Date().toISOString();
+      var after = compute(allDocs()), lvA = levelOf(after.xp);
+      var pr = (after.per[docId(e.s)] || { prs: [] }).prs.some(function (p) { return p.ex === exId && p.kg === r.kg && p.reps === r.reps; });
+      pop(btn, "+" + (after.xp - before.xp) + " EXP" + (pr ? " · récord" : ""), pr);
+      if (lvA.rankIdx > lvB.rankIdx) sysNote("Ascenso de rango", "Rango " + lvA.rank, "Has alcanzado " + RANKS[lvA.rankIdx][0] + " EXP");
+      else if (lvA.n > lvB.n) sysNote("¡Subiste de nivel!", "Nivel " + lvA.n, "Rango " + lvA.rank + " · " + after.xp + " EXP");
       startRest(e.rest, e.name);
+      $all('[data-f="kg"]', box).forEach(function (inp) { var j = +inp.getAttribute("data-i"); if (j > i && !(arr[j] && arr[j].done)) { inp.value = r.kg; arr[j].kg = r.kg; } });
     }
     save(e.s);
-    markRow(box, exId, i, !!(arr[i] && arr[i].done));
-    if (arr[i] && arr[i].done) {
-      $all('[data-f="kg"]', box).forEach(function (inp) { var j = +inp.getAttribute("data-i"); if (j > i && !(arr[j] && arr[j].done)) inp.value = arr[i].kg; });
-    }
+    markRow(box, exId, i, r.done);
     renderStats();
   }
   function markRow(box, exId, i, on) {
@@ -299,8 +334,40 @@
       if (el.classList.contains("chk")) { el.classList.toggle("on", on); el.setAttribute("aria-pressed", on ? "true" : "false"); }
       else el.classList.toggle("done", on);
     });
-    var d = drafts[PLAN.ex[exId].s], n = ((d && d.sets[exId]) || []).filter(function (r) { return r && r.done; }).length;
-    $(".log-c", box).textContent = n + " / " + PLAN.ex[exId].rows.length + " series";
+    var rows = getRows(exId);
+    $(".log-c", box).textContent = rows.filter(function (r) { return r && r.done; }).length + " / " + rows.length + " series";
+  }
+  function addSet(exId) {
+    var e = PLAN.ex[exId], box = $('.log[data-ex="' + exId + '"]'), arr = materialize(exId, box);
+    var uni = e.rows.some(function (r) { return r[1]; }), last = arr[arr.length - 1] || null, row;
+    if (uni) row = last && last.lado === "izq" ? { serie: last.serie, lado: "der" } : { serie: (last ? last.serie : 0) + 1, lado: "izq" };
+    else row = { serie: arr.length + 1, lado: null };
+    row.kg = last ? last.kg : e.kg; row.reps = last ? last.reps : e.repsMin; row.rir = last ? last.rir : (e.rir === null ? "" : e.rir); row.done = false;
+    arr.push(row); renumber(arr);
+    save(e.s); renderLogger(exId); renderStats();
+    var nb = $('.log[data-ex="' + exId + '"] .chk[data-i="' + (arr.length - 1) + '"]'); if (nb) nb.focus();
+  }
+  function delSet(btn) {
+    var box = btn.closest(".log[data-ex]"), exId = box.getAttribute("data-ex"), e = PLAN.ex[exId], i = +btn.getAttribute("data-del");
+    var arr = materialize(exId, box), removed = arr.splice(i, 1)[0];
+    renumber(arr); save(e.s); renderLogger(exId); renderStats();
+    showToast("Serie eliminada" + (removed && removed.done ? " (−10 EXP)" : ""), function () {
+      var a2 = draftFor(e.s).sets[exId] = draftFor(e.s).sets[exId] || [];
+      a2.splice(Math.min(i, a2.length), 0, removed); renumber(a2); save(e.s); renderLogger(exId); renderStats();
+    });
+  }
+  var undoFn = null, toastTimer = null, toast = document.createElement("div");
+  toast.className = "toast"; toast.hidden = true; toast.setAttribute("role", "status");
+  toast.innerHTML = '<span id="toast-t"></span><button type="button" id="toast-undo">Deshacer</button>';
+  document.body.appendChild(toast);
+  function showToast(text, undo) { $("#toast-t").textContent = text; undoFn = undo; toast.hidden = false; clearTimeout(toastTimer); toastTimer = setTimeout(hideToast, 6000); }
+  function hideToast() { toast.hidden = true; undoFn = null; }
+  function sysNote(label, big, sub) {
+    var n = document.createElement("div"); n.className = "sysnote"; n.setAttribute("role", "status");
+    var l = document.createElement("span"); l.className = "lbl"; l.textContent = "[ SISTEMA ] " + label;
+    var b = document.createElement("b"); b.textContent = big; var s = document.createElement("span"); s.textContent = sub;
+    n.appendChild(l); n.appendChild(b); n.appendChild(s); document.body.appendChild(n);
+    setTimeout(function () { n.remove(); }, 2700);
   }
   function pop(anchor, text, pr) {
     var r = anchor.getBoundingClientRect(), el = document.createElement("div");
@@ -340,7 +407,7 @@
   $("#rest-add").addEventListener("click", function () { restEnd += 15000; restTotal += 15; if (rest.classList.contains("end")) { rest.classList.remove("end"); clearInterval(restTimer); restTimer = setInterval(tick, 250); } tick(); });
   $("#rest-skip").addEventListener("click", function () { clearInterval(restTimer); rest.hidden = true; });
 
-  /* ---------- Terminar sesión y celebración ---------- */
+  /* ---------- Completar misión y celebración ---------- */
   function finishSession(sid) {
     var d = draftFor(sid), before = compute(allDocs()), lvB = levelOf(before.xp);
     d.completada = true; d.completedAt = new Date().toISOString();
@@ -351,19 +418,21 @@
   }
   var modal = $("#modal");
   function celebrate(r) {
-    $("#m-title").textContent = r.lvA.n > r.lvB.n ? "¡Subiste a " + r.lvA.name + "!" : "¡" + r.name + " completada!";
+    var up = r.lvA.n > r.lvB.n, rankUp = r.lvA.rankIdx > r.lvB.rankIdx;
+    $(".sheet").classList.toggle("lvup", up);
+    $("#m-title").textContent = rankUp ? "Ascenso: Rango " + r.lvA.rank : up ? "¡Subiste de nivel!" : "Misión completada";
     $("#m-xp").textContent = "+" + r.gain;
-    $("#m-lv").textContent = "Nivel " + r.lvA.n + " · " + r.lvA.name;
-    $("#m-lvnext").textContent = r.lvA.next ? (r.lvA.next[0] - r.total) + " XP para " + r.lvA.next[1] : "Nivel máximo";
-    var bar = $("#m-bar"); bar.style.transition = "none"; bar.style.width = (r.lvA.n > r.lvB.n ? 0 : Math.round(r.lvB.pct * 100)) + "%";
+    $("#m-lv").textContent = "Nivel " + r.lvA.n + " · Rango " + r.lvA.rank;
+    $("#m-lvnext").textContent = r.lvA.toNext + " EXP para el nivel " + (r.lvA.n + 1);
+    var bar = $("#m-bar"); bar.style.transition = "none"; bar.style.width = (up ? 0 : Math.round(r.lvB.pct * 100)) + "%";
     var facts = $("#m-facts"); facts.textContent = "";
-    [[String(r.sets), "series"], [String(r.prs.length), r.prs.length === 1 ? "récord" : "récords"], [r.week + "/4", "esta semana"]].forEach(function (f) {
+    [[String(r.sets), "series"], [String(r.prs.length), r.prs.length === 1 ? "récord" : "récords"], [r.week + "/4", "misiones semana"]].forEach(function (f) {
       var li = document.createElement("li"), b = document.createElement("b"), s = document.createElement("span");
       b.textContent = f[0]; s.textContent = f[1]; li.appendChild(b); li.appendChild(s); facts.appendChild(li);
     });
     var extra = $("#m-extra"); extra.textContent = "";
-    r.prs.forEach(function (p) { var li = document.createElement("li"); li.className = "pr"; li.textContent = "Récord en " + PLAN.ex[p.ex].name + ": " + (p.kg > 0 ? fmtKg(p.kg) + " kg × " : "") + p.reps; extra.appendChild(li); });
-    r.badges.forEach(function (b) { var li = document.createElement("li"); li.className = "bd"; li.textContent = "Logro desbloqueado: " + b.name; extra.appendChild(li); });
+    r.prs.forEach(function (p) { var li = document.createElement("li"); li.className = "pr"; li.textContent = "Límite superado · " + PLAN.ex[p.ex].name + ": " + (p.kg > 0 ? fmtKg(p.kg) + " kg × " : "") + p.reps; extra.appendChild(li); });
+    r.badges.forEach(function (b) { var li = document.createElement("li"); li.className = "bd"; li.textContent = "Título obtenido: " + b.name; extra.appendChild(li); });
     modal.hidden = false;
     requestAnimationFrame(function () { requestAnimationFrame(function () { bar.style.transition = ""; bar.style.width = Math.round(r.lvA.pct * 100) + "%"; }); });
     $("#m-close").focus();

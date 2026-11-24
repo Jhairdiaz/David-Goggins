@@ -16,9 +16,11 @@ Rol: entrenador personal y preparador físico basado en evidencia (hipertrofia, 
 - Si falta un dato clave (RIR real, molestias, partido), pedirlo brevemente antes del ajuste definitivo.
 - Tono: directo, técnico cuando aporte, práctico, motivador. Español.
 
-## Registro desde la página (gamificada)
+## Registro desde la página «Gate 10» (gamificada, estilo ventanas de «Sistema»)
 - Página: https://claude.ai/artifact/BkVqYpoYEhUNBiRosEME5P (fuente en `pagina/`: `generar.py`, `plantilla.html`, `app.js`; regenerar con `cd pagina && python3 generar.py`).
 - El atleta registra series en la página. Se guardan en la base de datos del artifact, colección `sesiones`, documento `<fecha>_<sesion>` (p. ej. `2026-11-26_pierna-a`), con `sets.<sesion>-<n>[]` = {serie, lado, kg, reps, rir, done}. Los ids de ejercicio siguen el orden de `pagina/generar.py`.
 - Cuando reporte un entreno, leer primero esa colección con la herramienta ArtifactData (`list` de `sesiones`), volcar las series nuevas a `log_entrenamientos.csv` y ajustar la prescripción.
-- Gamificación: 10 XP/serie, 25 XP/récord (1 por ejercicio y sesión), 50 XP/sesión terminada, 100 XP/semana con 4 sesiones. Niveles: Cantera 0, Suplente 300, Titular 800, Capitán 1500, Crack 2500, Figura 4000, Leyenda 6000.
+- Gamificación: 10 EXP/serie, 25 EXP/récord (1 por ejercicio y sesión), 50 EXP/misión completada, 100 EXP/semana con 4 misiones. Nivel cada 100 EXP. Rangos: E 0, D 400, C 1000, B 2000, A 3500, S 5500, SS 8000. Títulos en `app.js` (compute → badges).
+- El atleta puede añadir o eliminar series en la página: el número de series registradas puede diferir de la prescripción.
+- Inspirado en el estilo de anime de «sistema»/cazadores, sin usar nombres, personajes ni logos de ninguna obra concreta.
 - Si cambian ejercicios, cargas o la semana: editar `pagina/generar.py` / `plantilla.html`, regenerar y republicar en la misma URL. Actualizar también la semana (fechas y `BY_DATE` en `app.js`).

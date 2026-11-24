@@ -198,11 +198,11 @@ for s in SESSIONS:
     <div class="ph-title"><span class="md">{s["md"]}</span><h2>{s["name"]}</h2></div>
     <p class="focus">{E(s["focus"])}</p>
     {call}
-    <div class="sprog" data-sprog="{s["id"]}"><div class="sbar"><i></i></div><span class="stext">Registra tus series para sumar XP</span></div>
+    <div class="sprog" data-sprog="{s["id"]}"><div class="sbar"><i></i></div><span class="stext">Misión: registra tus series para ganar EXP</span></div>
   </header>
   <div class="warmup"><h4>Calentamiento</h4><ol>{wu}</ol></div>
   <div class="ex-list">{cards}</div>
-  <div class="finish-wrap"><button type="button" class="finish" data-finish="{s["id"]}">Terminar sesión</button><button type="button" class="reopen" data-reopen="{s["id"]}" hidden>Reabrir sesión</button></div>
+  <div class="finish-wrap"><button type="button" class="finish" data-finish="{s["id"]}">Completar misión</button><button type="button" class="reopen" data-reopen="{s["id"]}" hidden>Reabrir misión</button></div>
 </section>''')
 
 tpl = open("plantilla.html").read()
