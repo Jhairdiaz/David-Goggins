@@ -1,6 +1,6 @@
 (function () {
   "use strict";
-  var PLAN = JSON.parse(document.getElementById("plan").textContent);
+  var PLAN = JSON.parse(document.getElementById("plan-data").textContent);
   var TABS = ["torso-a", "pierna-a", "torso-b", "pierna-b", "progreso", "progresion", "partido"];
   var BY_DATE = { "2026-11-23": "torso-a", "2026-11-24": "partido", "2026-11-25": "pierna-a", "2026-11-26": "pierna-a", "2026-11-27": "torso-b", "2026-11-28": "pierna-b" };
   var RANKING = [[0, 300], [150, 250], [300, 200], [500, 150], [800, 100], [1200, 75], [1700, 50], [2400, 30], [3200, 20], [4200, 11], [5500, 5], [7000, 3], [8500, 1]];
@@ -31,19 +31,40 @@
   function clone(o) { return JSON.parse(JSON.stringify(o)); }
   function fmtKg(k) { return (Math.round(k * 10) / 10).toString().replace(".", ","); }
 
-  /* ---------- Pestañas ---------- */
-  function show(id) {
-    if (TABS.indexOf(id) < 0) id = BY_DATE[TODAY] || "torso-a";
-    $all(".panel[data-tab]").forEach(function (p) { p.hidden = p.getAttribute("data-tab") !== id; });
-    $all(".tab").forEach(function (t) {
-      var on = t.getAttribute("href") === "#" + id;
-      t.setAttribute("aria-selected", on ? "true" : "false");
-      if (on) { var c = t.parentNode; if (c.scrollWidth > c.clientWidth) c.scrollLeft = Math.max(0, t.offsetLeft - 24); }
-    });
+  /* ---------- Navegación (menú inferior + sesiones) ---------- */
+  var SCREENS = ["inicio", "entrenar", "partido", "carta", "plan"];
+  var SESS = ["torso-a", "pierna-a", "torso-b", "pierna-b"];
+  var ALIAS = { progreso: "carta", progresion: "plan" };
+  var curSession = null, autoOpened = {};
+  function lsGet(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }
+  function lsSet(k, v) { try { localStorage.setItem(k, v); } catch (e) {} }
+  function todaySession() { var s = BY_DATE[TODAY]; return SESS.indexOf(s) >= 0 ? s : null; }
+  function route() {
+    var h = (location.hash || "").slice(1); h = ALIAS[h] || h;
+    var screen = "inicio", sess = null;
+    if (SESS.indexOf(h) >= 0) { screen = "entrenar"; sess = h; }
+    else if (SCREENS.indexOf(h) >= 0) screen = h;
+    if (screen === "entrenar" && !sess) sess = curSession || todaySession() || lsGet("arma10-ses") || "torso-a";
+    $all(".screen").forEach(function (s) { s.hidden = s.getAttribute("data-screen") !== screen; });
+    $all(".bnav a").forEach(function (a) { if (a.getAttribute("data-nav") === screen) a.setAttribute("aria-current", "page"); else a.removeAttribute("aria-current"); });
+    if (sess) {
+      curSession = sess; lsSet("arma10-ses", sess);
+      $all(".panel[data-tab]").forEach(function (p) { p.hidden = p.getAttribute("data-tab") !== sess; });
+      $all(".segb").forEach(function (b) { b.setAttribute("aria-selected", b.getAttribute("data-seg") === sess ? "true" : "false"); b.classList.toggle("today-seg", b.getAttribute("data-seg") === todaySession()); });
+      openNext(sess);
+    }
+    window.scrollTo(0, 0);
+  }
+  function openNext(sid) {
+    if (autoOpened[sid] || !loaded) return;
+    var s = PLAN.sessions.filter(function (x) { return x.id === sid; })[0]; if (!s) return;
+    var target = null;
+    s.ex.some(function (ex) { var rows = getRows(ex); if (rows.filter(function (r) { return r && r.done; }).length < rows.length) { target = ex; return true; } return false; });
+    if (target) { var d = document.getElementById(target); if (d) d.open = true; }
+    autoOpened[sid] = true;
   }
   $all(".day[data-date]").forEach(function (el) { if (el.getAttribute("data-date") === TODAY) el.classList.add("today"); });
-  show(location.hash.slice(1));
-  window.addEventListener("hashchange", function () { show(location.hash.slice(1)); });
+  window.addEventListener("hashchange", route);
 
   /* ---------- Estado ---------- */
   var db = null, canWrite = false, loaded = false, remote = {}, drafts = {}, matches = {}, matchesLoaded = false;
@@ -165,7 +186,10 @@
   /* ---------- Render: cabecera, semana, estado ---------- */
   function renderStats() {
     var c = compute(allDocs()), lv = levelOf(c.xp);
-    $("#st-rank").textContent = lv.pos;
+    $("#st-rank").textContent = lv.pos; $("#tb-rank").textContent = lv.pos; $("#tb-lv").textContent = lv.n;
+    var tier = lv.pos <= 5 ? 5 : lv.pos <= 30 ? 4 : lv.pos <= 100 ? 3 : lv.pos < 200 ? 2 : 1;
+    $all("[data-avatar]").forEach(function (el) { el.setAttribute("data-tier", tier); });
+    renderToday(c);
     $("#st-ranknext").textContent = lv.nextRank ? "Faltan " + (lv.nextRank[0] - c.xp) + " EXP para subir al #" + lv.nextRank[1] : "Número 1 del programa";
     $("#st-lvnum").textContent = lv.n; $("#st-lvexp").textContent = c.xp + " EXP";
     $("#st-xpbar").style.width = Math.round(lv.pct * 100) + "%";
@@ -174,7 +198,7 @@
     $("#st-streak").textContent = c.streak; $("#st-streak-u").textContent = c.streak === 1 ? "semana" : "semanas";
     $("#st-week").textContent = Math.min(c.week, 9);
     $all("#st-pips span").forEach(function (p, i) { p.classList.toggle("on", i < c.week); });
-    $("#st-match").textContent = c.matchWeek ? "Partido registrado · +" + c.matchWeek.xp + " EXP" : "Partido de la semana: pendiente";
+    $("#st-match").textContent = c.matchWeek ? "Registrado · +" + c.matchWeek.xp + " EXP" : "Pendiente";
     $all(".day[data-date]").forEach(function (el) {
       var d = el.getAttribute("data-date");
       el.classList.toggle("done", c.list.some(function (x) { return x.fecha === d && x.completada; }) || !!c.mper[d]);
@@ -234,10 +258,26 @@
     });
     svg.innerHTML = h;
   }
+  function renderToday(c) {
+    var key = BY_DATE[TODAY], title, sub, href, go = "Abrir";
+    if (key === "partido") {
+      var m = c.mper[TODAY];
+      title = "Partido · 7:00 PM"; sub = m ? "Registrado: " + num(m.doc.minutos) + "' · " + num(m.doc.goles) + " G · " + num(m.doc.asistencias) + " A" : "Al terminar, regístralo y suma EXP";
+      href = "#partido"; go = m ? "Ver" : "Registrar";
+    } else if (SESS.indexOf(key) >= 0) {
+      var rows = 0, done = 0, s = PLAN.sessions.filter(function (x) { return x.id === key; })[0], d = drafts[key] || remote[docId(key)];
+      s.ex.forEach(function (ex) { var r = getRows(ex); rows += r.length; done += r.filter(function (x) { return x && x.done; }).length; });
+      title = s.name; sub = d && d.completada ? "Misión completada · " + done + " series" : done ? "En curso · " + done + " de " + rows + " series" : rows + " series · " + s.ex.length + " ejercicios";
+      href = "#" + key; go = d && d.completada ? "Ver" : done ? "Seguir" : "Empezar";
+    } else {
+      title = "Descanso"; sub = "Recupera: caminar, movilidad y buena comida. Siguiente misión mañana."; href = "#plan"; go = "Plan";
+    }
+    $("#td-title").textContent = title; $("#td-sub").textContent = sub; $("#td-go").textContent = go; $("#today").setAttribute("href", href);
+  }
   function renderSessionProgress(s) {
     var box = $('[data-sprog="' + s.id + '"]'); if (!box) return;
     var total = 0, done = 0, d = drafts[s.id] || remote[docId(s.id)];
-    s.ex.forEach(function (ex) { var rows = getRows(ex); total += rows.length; done += rows.filter(function (r) { return r && r.done; }).length; });
+    s.ex.forEach(function (ex) { var rows = getRows(ex), dn = rows.filter(function (r) { return r && r.done; }).length; total += rows.length; done += dn; updateChip(ex, dn, rows.length); });
     $(".sbar i", box).style.width = (total ? Math.round(done / total * 100) : 0) + "%";
     var c = compute(allDocs()), p = c.per[docId(s.id)];
     $(".stext", box).textContent = (!loaded || !canWrite) ? "Misión: registra tus series para ganar EXP" :
@@ -372,6 +412,10 @@
     save(e.s);
     markRow(box, exId, i, r.done);
     renderStats();
+  }
+  function updateChip(exId, dn, tot) {
+    var ch = $('[data-st="' + exId + '"]'); if (!ch) return;
+    ch.textContent = dn + "/" + tot; ch.classList.toggle("full", tot > 0 && dn >= tot); ch.classList.toggle("part", dn > 0 && dn < tot);
   }
   function markRow(box, exId, i, on) {
     $all('[data-i="' + i + '"]', box).forEach(function (el) {
@@ -541,7 +585,7 @@
   }
 
   /* ---------- Arranque ---------- */
-  renderAllLoggers(); renderStats();
+  renderAllLoggers(); renderStats(); route();
   var loadTimer = setTimeout(function () { if (!loaded) setSync("Tu registro aún no responde. Puedes ver la rutina; el registro se activa al conectar.", "err"); }, 10000);
   if (!window.claude || !window.claude.use) { clearTimeout(loadTimer); setSync("Abre esta página en Claude para registrar tus series.", "off"); return; }
   Promise.all([window.claude.use("db"), window.claude.use("user")]).then(function (res) {
@@ -554,7 +598,7 @@
         remote = {};
         snap.docs.forEach(function (doc) { if (doc.exists) remote[doc.id] = doc.data(); });
         if (!snap.metadata.fromCache) clearTimeout(loadTimer);
-        if (!loaded) { loaded = true; renderAllLoggers(); setSync(canWrite ? "Registro conectado · Claude puede leer tus series y partidos" : "Vista de solo lectura", canWrite ? "ok" : "off"); }
+        if (!loaded) { loaded = true; renderAllLoggers(); if (curSession) openNext(curSession); setSync(canWrite ? "Registro conectado · Claude puede leer tus series y partidos" : "Vista de solo lectura", canWrite ? "ok" : "off"); }
         renderStats(); fillMatchForm();
       }, function () { clearTimeout(loadTimer); setSync("Se perdió la conexión con tu registro. Recarga la página para reintentar.", "err"); });
       db.collection("partidos").onSnapshot(function (snap) {

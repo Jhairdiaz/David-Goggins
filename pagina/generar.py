@@ -165,7 +165,16 @@ def card(sid, i, e):
     ap = f'<p class="approx">{E(approx)}</p>' if approx else ""
     long_sets = " long" if len(sets) > 4 else ""
     first = last == "Primera sesión"
-    return f'''<article class="ex" id="{sid}-{i}">
+    nrows = len(parse_rows(sets))
+    return f'''<details class="ex" id="{sid}-{i}">
+  <summary class="ex-sum">
+    <span class="idx">{i:02d}</span>
+    <span class="ex-t"><b>{E(name)}</b><small>{E(sets)} × {E(reps)} · {E(load)}</small></span>
+    {('<span class="tags">'+tags+'</span>') if tags else ''}
+    <span class="ex-st" data-st="{sid}-{i}">0/{nrows}</span>
+    <svg class="chev" viewBox="0 0 16 16" aria-hidden="true"><path d="M4 6l4 4 4-4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+  </summary>
+  <div class="ex-body">
   <div class="ex-media">
     <div class="pics{pcls}">
       <figure><img src="img/{img}_0.jpg" alt="{E(name)}, posición inicial" loading="lazy" width="560" height="420"><figcaption>Inicio</figcaption></figure>
@@ -173,7 +182,6 @@ def card(sid, i, e):
     </div>{ap}
   </div>
   <div class="ex-main">
-    <header class="ex-head"><span class="idx">{i:02d}</span><h3>{E(name)}</h3>{('<div class="tags">'+tags+'</div>') if tags else ''}</header>
     <div class="rx">
       <div class="rx-big"><div><span class="lbl">Series</span><span class="num{long_sets}">{E(sets)}</span></div><span class="times" aria-hidden="true">×</span><div><span class="lbl">Reps</span><span class="num">{E(reps)}</span></div></div>
       <dl class="rx-meta"><div><dt>Carga</dt><dd>{E(load)}</dd></div><div><dt>RIR</dt><dd>{E(rir)}</dd></div><div><dt>Descanso</dt><dd>{E(rest)}</dd></div></dl>
@@ -186,25 +194,33 @@ def card(sid, i, e):
     </div>
     <div class="log" data-ex="{sid}-{i}"></div>
   </div>
-</article>'''
+  </div>
+</details>'''
 
 panels = []
 for s in SESSIONS:
     wu = "".join(f"<li>{E(w)}</li>" for w in s["warmup"])
     call = f'<p class="callout"><svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="6.5" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M8 4.5v4.2M8 11v.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>{E(s["callout"])}</p>' if s["callout"] else ""
     cards = "\n".join(card(s["id"], i + 1, e) for i, e in enumerate(s["ex"]))
-    panels.append(f'''<section class="panel" id="{s["id"]}" data-tab="{s["id"]}" aria-labelledby="t-{s["id"]}">
+    panels.append(f'''<section class="panel" id="{s["id"]}" data-tab="{s["id"]}" aria-label="{s["name"]}">
   <header class="panel-head">
     <div class="ph-title"><span class="md">{s["md"]}</span><h2>{s["name"]}</h2></div>
     <p class="focus">{E(s["focus"])}</p>
     {call}
     <div class="sprog" data-sprog="{s["id"]}"><div class="sbar"><i></i></div><span class="stext">Misión: registra tus series para ganar EXP</span></div>
   </header>
-  <div class="warmup"><h4>Calentamiento</h4><ol>{wu}</ol></div>
+  <details class="warmup"><summary><span class="lbl">Calentamiento</span><span class="wu-n">{len(s["warmup"])} pasos · 8–10 min</span><svg class="chev" viewBox="0 0 16 16" aria-hidden="true"><path d="M4 6l4 4 4-4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></summary><ol>{wu}</ol></details>
   <div class="ex-list">{cards}</div>
   <div class="finish-wrap"><button type="button" class="finish" data-finish="{s["id"]}">Completar misión</button><button type="button" class="reopen" data-reopen="{s["id"]}" hidden>Reabrir misión</button></div>
 </section>''')
 
-tpl = open("plantilla.html").read()
+import os
+AVATAR_SVG = '''<svg class="av-svg" viewBox="0 0 120 120" aria-hidden="true"><g stroke="rgba(53,215,255,.16)" stroke-width="2"><path d="M-10 95 60-10M10 125 95-10M45 128 128 10"/></g><path d="M12 122c4-25 21-36 48-38 27 2 44 13 48 38z" fill="#0c1d4c"/><path d="M47 85 60 99 73 85" fill="none" stroke="#35d7ff" stroke-width="2.2"/><text x="60" y="117" text-anchor="middle" font-family="Saira Condensed,Arial Narrow,sans-serif" font-weight="800" font-style="italic" font-size="19" fill="#fff">10</text><path d="M51 70v16h18V70z" fill="#050d26"/><ellipse cx="60" cy="56" rx="19" ry="23" fill="#050d26"/><path d="M37 53 33 33l11 7-2-17 11 11 3-16 7 14 8-13 1 16 11-8-3 15 8-2-7 12c-2-12-11-19-21-19s-19 7-22 19z" fill="#050d26"/><path class="eye" d="m47 57 9-2m8 0 9 2" stroke="#35d7ff" stroke-width="2.8" stroke-linecap="round"/></svg>'''
+def avatar_html():
+    if os.path.exists("img/avatar.jpg"):
+        return '<img class="av-img" src="img/avatar.jpg" alt="Avatar del jugador">'
+    return AVATAR_SVG
+
+tpl = open("plantilla.html").read().replace("<!--AVATAR-->", avatar_html())
 open("rutina.html", "w").write(tpl.replace("<!--PANELS-->", "\n".join(panels)).replace("/*PLAN*/", plan_json()).replace("/*APP*/", open("app.js").read()))
 print("ok", sum(len(s["ex"]) for s in SESSIONS), "ejercicios")
