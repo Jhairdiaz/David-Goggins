@@ -17,7 +17,7 @@
 
 ## Datos pendientes (completar)
 - [ ] Hora habitual de entrenamiento (¿antes o después de las 10:00?)
-- [ ] Marcas: fondos máx. reps (dominadas: 4×7 en la sem 1)
+- [ ] Marcas: fondos máx. reps · dominadas máx. en una serie (sem 1: 7×4)
 - [ ] ¿Hay más pesos además de 10, 19 y 22 kg?
 - [ ] ¿Tienes mochila/cinturón para lastre? ¿Bandas elásticas?
 - [ ] Molestias o lesiones previas (rodilla, aductor, isquios, hombro)
