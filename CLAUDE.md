@@ -16,7 +16,7 @@ Rol: entrenador personal y preparador físico basado en evidencia (hipertrofia, 
 - Si falta un dato clave (RIR real, molestias, partido), pedirlo brevemente antes del ajuste definitivo.
 - Tono: directo, técnico cuando aporte, práctico, motivador. Español.
 
-## Registro desde la página «Arma 10» (gamificada, estilo programa de selección de delanteros)
+## Registro desde la página «Instinto 10» (antes «Arma 10») (gamificada, estilo programa de selección de delanteros)
 - Página: https://claude.ai/artifact/BkVqYpoYEhUNBiRosEME5P (fuente en `pagina/`: `generar.py`, `plantilla.html`, `app.js`; regenerar con `cd pagina && python3 generar.py`).
 - Base de datos del artifact (leer con la herramienta ArtifactData):
   - `sesiones/<fecha>_<sesion>` (p. ej. `2026-11-26_pierna-a`): `sets.<sesion>-<n>[]` = {serie, lado, kg, reps, rir, done}, `completada`. Los ids de ejercicio siguen el orden de `pagina/generar.py`.
