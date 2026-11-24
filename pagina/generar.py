@@ -30,7 +30,7 @@ SESSIONS = [
   ]),
  dict(id="pierna-a", name="Pierna A", md="MD+2", focus="Cuádriceps y trabajo unilateral · la sesión más pesada de pierna",
   callout="Rodilla izquierda: durante el ejercicio, dolor hasta 3/10. A la mañana siguiente debe estar igual o mejor; si está peor, la próxima sesión baja carga o rango. Si llegas con agujetas fuertes del partido: RIR +1 y quita la última serie de cada ejercicio (la serie extra de la izquierda se mantiene si la rodilla lo permite).",
-  warmup=["3 min de trote en el sitio", "10 sentadillas profundas con pausa", "10 split squats por lado sin peso", "Sentadilla en pared 4×30–45 s, 1 min de pausa (profundidad con dolor ≤3/10)"],
+  warmup=["3 min de trote en el sitio", "10 sentadillas profundas con pausa", "10 split squats por lado sin peso", "2×10 pasos laterales por lado con la mini-banda sobre las rodillas", "Sentadilla en pared 4×30–45 s, 1 min de pausa (profundidad con dolor ≤3/10)"],
   ex=[
    ("Sentadilla búlgara","Split_Squat_with_Dumbbells","2×19 kg","Izq 4 · Der 3","8–12","1–2","2:00 entre lados","3-0-3-0",
     "Lenta al bajar y al subir: carga pesada y controlada, lo que mejor tolera el tendón rotuliano. Pie trasero sobre el banco, torso erguido. Baja solo hasta donde la rodilla izquierda esté en 3/10 o menos. La derecha hace exactamente las reps que hizo la izquierda.",
