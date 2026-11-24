@@ -16,11 +16,13 @@ Rol: entrenador personal y preparador físico basado en evidencia (hipertrofia, 
 - Si falta un dato clave (RIR real, molestias, partido), pedirlo brevemente antes del ajuste definitivo.
 - Tono: directo, técnico cuando aporte, práctico, motivador. Español.
 
-## Registro desde la página «Gate 10» (gamificada, estilo ventanas de «Sistema»)
+## Registro desde la página «Arma 10» (gamificada, estilo programa de selección de delanteros)
 - Página: https://claude.ai/artifact/BkVqYpoYEhUNBiRosEME5P (fuente en `pagina/`: `generar.py`, `plantilla.html`, `app.js`; regenerar con `cd pagina && python3 generar.py`).
-- El atleta registra series en la página. Se guardan en la base de datos del artifact, colección `sesiones`, documento `<fecha>_<sesion>` (p. ej. `2026-11-26_pierna-a`), con `sets.<sesion>-<n>[]` = {serie, lado, kg, reps, rir, done}. Los ids de ejercicio siguen el orden de `pagina/generar.py`.
-- Cuando reporte un entreno, leer primero esa colección con la herramienta ArtifactData (`list` de `sesiones`), volcar las series nuevas a `log_entrenamientos.csv` y ajustar la prescripción.
-- Gamificación: 10 EXP/serie, 25 EXP/récord (1 por ejercicio y sesión), 50 EXP/misión completada, 100 EXP/semana con 4 misiones. Nivel cada 100 EXP. Rangos: E 0, D 400, C 1000, B 2000, A 3500, S 5500, SS 8000. Títulos en `app.js` (compute → badges).
+- Base de datos del artifact (leer con la herramienta ArtifactData):
+  - `sesiones/<fecha>_<sesion>` (p. ej. `2026-11-26_pierna-a`): `sets.<sesion>-<n>[]` = {serie, lado, kg, reps, rir, done}, `completada`. Los ids de ejercicio siguen el orden de `pagina/generar.py`.
+  - `partidos/<fecha>`: {minutos, goles, asistencias, rpe (1–10), piernas (1 muy cargadas – 5 frescas), notas}. Usar `piernas`, `rpe` y `notas` para ajustar el RIR/volumen de Pierna A (MD+2).
+- Cuando reporte un entreno o un partido: leer primero esas colecciones (`list`), volcar lo nuevo a `log_entrenamientos.csv` y ajustar la prescripción.
+- Gamificación: 10 EXP/serie, 25 EXP/récord (1 por ejercicio y sesión), 50 EXP/misión completada, 100 EXP/semana con 4 misiones, 60 EXP/partido (+30 gol, +20 asistencia). Nivel cada 100 EXP. Ranking de #300 a #1 según EXP (tabla `RANKING` en `app.js`). Carta de jugador con 6 atributos (FÍS, FUE, POT, RES, ATQ, MEN) calculados del registro; armas desbloqueables en `compute → badges`.
 - El atleta puede añadir o eliminar series en la página: el número de series registradas puede diferir de la prescripción.
-- Inspirado en el estilo de anime de «sistema»/cazadores, sin usar nombres, personajes ni logos de ninguna obra concreta.
+- Inspirado en el estilo de anime de fútbol de «programa de selección», sin usar nombres, personajes ni logos de ninguna obra concreta.
 - Si cambian ejercicios, cargas o la semana: editar `pagina/generar.py` / `plantilla.html`, regenerar y republicar en la misma URL. Actualizar también la semana (fechas y `BY_DATE` en `app.js`).

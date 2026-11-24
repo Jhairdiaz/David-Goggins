@@ -3,7 +3,8 @@
   var PLAN = JSON.parse(document.getElementById("plan").textContent);
   var TABS = ["torso-a", "pierna-a", "torso-b", "pierna-b", "progreso", "progresion", "partido"];
   var BY_DATE = { "2026-11-23": "torso-a", "2026-11-24": "partido", "2026-11-25": "pierna-a", "2026-11-26": "pierna-a", "2026-11-27": "torso-b", "2026-11-28": "pierna-b" };
-  var RANKS = [[0, "E"], [400, "D"], [1000, "C"], [2000, "B"], [3500, "A"], [5500, "S"], [8000, "SS"]];
+  var RANKING = [[0, 300], [150, 250], [300, 200], [500, 150], [800, 100], [1200, 75], [1700, 50], [2400, 30], [3200, 20], [4200, 11], [5500, 5], [7000, 3], [8500, 1]];
+  var XP_MATCH = 60, XP_GOAL = 30, XP_ASSIST = 20;
   var XP_LEVEL = 100;
   var WEEK_GOAL = 4;
   var XP_SET = 10, XP_PR = 25, XP_SESSION = 50, XP_WEEK = 100;
@@ -45,7 +46,7 @@
   window.addEventListener("hashchange", function () { show(location.hash.slice(1)); });
 
   /* ---------- Estado ---------- */
-  var db = null, canWrite = false, loaded = false, remote = {}, drafts = {};
+  var db = null, canWrite = false, loaded = false, remote = {}, drafts = {}, matches = {}, matchesLoaded = false;
   var syncEl = $("#sync");
   function setSync(text, kind) { syncEl.textContent = text; syncEl.setAttribute("data-kind", kind || ""); }
   function docId(sid) { return TODAY + "_" + sid; }
@@ -104,24 +105,47 @@
     var sessionsDone = list.filter(function (d) { return d.completada; }).length;
     var legsWeek = Object.keys(weekSes).some(function (w) { return weekSes[w]["pierna-a"] && weekSes[w]["pierna-b"]; });
     var fullWeek = Object.keys(weeks).some(function (w) { return weeks[w] >= WEEK_GOAL; });
+    var torso = 0, pierna = 0;
+    list.forEach(function (d) { var s = d.sets || {}; Object.keys(s).forEach(function (ex) { var n = (s[ex] || []).filter(function (r) { return r && r.done; }).length; if (ex.indexOf("torso") === 0) torso += n; else pierna += n; }); });
+    var mins = 0, goals = 0, assists = 0, mcount = 0, mper = {}, matchWeek = null;
+    Object.keys(matches).sort().forEach(function (k) {
+      var m = matches[k]; if (!m || !m.fecha) return;
+      var mx = XP_MATCH + XP_GOAL * num(m.goles) + XP_ASSIST * num(m.asistencias);
+      xp += mx; mins += num(m.minutos); goals += num(m.goles); assists += num(m.asistencias); mcount++;
+      mper[m.fecha] = { xp: mx, doc: m };
+      if (weekKey(m.fecha) === cur) matchWeek = mper[m.fecha];
+    });
     var badges = [
-      { id: "primer", name: "Despertado", desc: "Completa tu primera misión", ok: sessionsDone >= 1 },
+      { id: "debut", name: "Debut", desc: "Completa tu primera misión", ok: sessionsDone >= 1 },
+      { id: "cancha", name: "Pisando cancha", desc: "Registra tu primer partido", ok: mcount >= 1 },
       { id: "record", name: "Rompe límites", desc: "Supera una marca anterior", ok: prs >= 1 },
+      { id: "gol", name: "Hambre de gol", desc: "Registra tu primer gol", ok: goals >= 1 },
+      { id: "asist", name: "Visión de juego", desc: "Registra tu primera asistencia", ok: assists >= 1 },
       { id: "lastre", name: "Peso extra", desc: "Dominadas o fondos con chaleco", ok: lastre },
-      { id: "izq", name: "Pierna izquierda despierta", desc: "Pierna A y Pierna B en la misma semana", ok: legsWeek },
+      { id: "izq", name: "Pierna izquierda", desc: "Pierna A y Pierna B en la misma semana", ok: legsWeek },
       { id: "semana", name: "Semana perfecta", desc: "4 misiones en una semana", ok: fullWeek },
+      { id: "motor", name: "Motor", desc: "300 minutos jugados", ok: mins >= 300 },
       { id: "racha3", name: "Imparable", desc: "3 semanas perfectas seguidas", ok: streak >= 3 },
       { id: "cien", name: "Cien series", desc: "Registra 100 series", ok: sets >= 100 },
       { id: "diez", name: "Diez récords", desc: "Suma 10 récords personales", ok: prs >= 10 }
     ];
-    var torso = 0, pierna = 0;
-    list.forEach(function (d) { var s = d.sets || {}; Object.keys(s).forEach(function (ex) { var n = (s[ex] || []).filter(function (r) { return r && r.done; }).length; if (ex.indexOf("torso") === 0) torso += n; else pierna += n; }); });
-    return { xp: xp, prs: prs, sets: sets, per: per, weeks: weeks, streak: streak, week: weeks[cur] || 0, badges: badges, hist: hist, list: list, torso: torso, pierna: pierna, done: sessionsDone };
+    function cap(v) { return Math.min(99, v); }
+    var attrs = [
+      { k: "FÍS", n: "Físico", v: cap(45 + Math.floor(sets / 6)), d: sets + " series" },
+      { k: "FUE", n: "Fuerza", v: cap(45 + prs * 2 + Math.floor(torso / 12)), d: prs + " récords" },
+      { k: "POT", n: "Potencia", v: cap(45 + Math.floor(pierna / 5)), d: pierna + " series de pierna" },
+      { k: "RES", n: "Resistencia", v: cap(45 + Math.floor(mins / 30)), d: mins + " min jugados" },
+      { k: "ATQ", n: "Ataque", v: cap(45 + goals * 3 + assists * 2), d: goals + " G · " + assists + " A" },
+      { k: "MEN", n: "Mentalidad", v: cap(45 + sessionsDone * 2 + streak * 4), d: sessionsDone + (sessionsDone === 1 ? " misión" : " misiones") }
+    ];
+    var ovr = Math.round(attrs.reduce(function (s, x) { return s + x.v; }, 0) / attrs.length);
+    return { xp: xp, prs: prs, sets: sets, per: per, weeks: weeks, streak: streak, week: weeks[cur] || 0, badges: badges, hist: hist, list: list,
+      torso: torso, pierna: pierna, done: sessionsDone, mins: mins, goals: goals, assists: assists, mcount: mcount, mper: mper, matchWeek: matchWeek, attrs: attrs, ovr: ovr };
   }
   function levelOf(xp) {
     var lvl = Math.floor(xp / XP_LEVEL) + 1, r = 0;
-    while (r + 1 < RANKS.length && xp >= RANKS[r + 1][0]) r++;
-    return { n: lvl, rank: RANKS[r][1], rankIdx: r, nextRank: RANKS[r + 1] || null, toNext: lvl * XP_LEVEL - xp, pct: (xp % XP_LEVEL) / XP_LEVEL };
+    while (r + 1 < RANKING.length && xp >= RANKING[r + 1][0]) r++;
+    return { n: lvl, pos: RANKING[r][1], rankIdx: r, nextRank: RANKING[r + 1] || null, toNext: lvl * XP_LEVEL - xp, pct: (xp % XP_LEVEL) / XP_LEVEL };
   }
   function lastSetsFor(ex, excludeKey) {
     var list = allDocs(excludeKey).filter(function (d) { return d.sets && d.sets[ex] && d.sets[ex].some(function (r) { return r && r.done; }); });
@@ -141,46 +165,53 @@
   /* ---------- Render: cabecera, semana, estado ---------- */
   function renderStats() {
     var c = compute(allDocs()), lv = levelOf(c.xp);
-    $("#st-lvnum").textContent = lv.n; $("#st-lvname").textContent = "Rango " + lv.rank;
+    $("#st-rank").textContent = lv.pos;
+    $("#st-ranknext").textContent = lv.nextRank ? "Faltan " + (lv.nextRank[0] - c.xp) + " EXP para subir al #" + lv.nextRank[1] : "Número 1 del programa";
+    $("#st-lvnum").textContent = lv.n; $("#st-lvexp").textContent = c.xp + " EXP";
     $("#st-xpbar").style.width = Math.round(lv.pct * 100) + "%";
-    $("#st-xptext").textContent = c.xp + " EXP · faltan " + lv.toNext + " para el nivel " + (lv.n + 1);
+    $("#st-xptext").textContent = "Faltan " + lv.toNext + " EXP para el nivel " + (lv.n + 1);
+    $("#st-ovr").textContent = c.ovr; $("#st-ovrsub").textContent = c.prs + " récords · " + c.mcount + (c.mcount === 1 ? " partido" : " partidos");
     $("#st-streak").textContent = c.streak; $("#st-streak-u").textContent = c.streak === 1 ? "semana" : "semanas";
     $("#st-week").textContent = Math.min(c.week, 9);
     $all("#st-pips span").forEach(function (p, i) { p.classList.toggle("on", i < c.week); });
-    $("#st-prs").textContent = c.prs; $("#st-sets").textContent = c.sets + (c.sets === 1 ? " serie registrada" : " series registradas");
+    $("#st-match").textContent = c.matchWeek ? "Partido registrado · +" + c.matchWeek.xp + " EXP" : "Partido de la semana: pendiente";
     $all(".day[data-date]").forEach(function (el) {
       var d = el.getAttribute("data-date");
-      el.classList.toggle("done", c.list.some(function (x) { return x.fecha === d && x.completada; }));
+      el.classList.toggle("done", c.list.some(function (x) { return x.fecha === d && x.completada; }) || !!c.mper[d]);
     });
-    $("#pg-lvnum").textContent = lv.n; $("#pg-lvname").textContent = "Nivel " + lv.n + " · Rango " + lv.rank;
-    $("#pg-lvnext").textContent = c.xp + " EXP · " + lv.toNext + " para el nivel " + (lv.n + 1) + (lv.nextRank ? " · rango " + lv.nextRank[1] + " a los " + lv.nextRank[0] + " EXP" : "");
+    // Carta de jugador
+    $("#pg-ovr").textContent = c.ovr;
+    $("#pg-rank").textContent = "Ranking #" + lv.pos + " · Nivel " + lv.n + " · " + c.xp + " EXP";
     $("#pg-xpbar").style.width = Math.round(lv.pct * 100) + "%";
+    $("#pg-lvnext").textContent = lv.toNext + " EXP para el nivel " + (lv.n + 1) + (lv.nextRank ? " · " + (lv.nextRank[0] - c.xp) + " EXP para subir al #" + lv.nextRank[1] : "");
+    drawRadar(c.attrs);
     var at = $("#pg-attrs"); at.textContent = "";
-    [["FUE", c.torso, "series de torso"], ["POT", c.pierna, "series de pierna"], ["VIT", c.done, "misiones completadas"], ["VOL", c.prs, "récords personales"]].forEach(function (x) {
+    c.attrs.forEach(function (x) {
       var dv = document.createElement("div"), dt = document.createElement("dt"), dd = document.createElement("dd"), sm = document.createElement("small");
-      dt.textContent = x[0]; dd.textContent = x[1]; sm.textContent = x[2]; dv.appendChild(dt); dv.appendChild(dd); dv.appendChild(sm); at.appendChild(dv);
+      dt.textContent = x.k + " · " + x.n; dd.textContent = x.v; sm.textContent = x.d; dv.appendChild(dt); dv.appendChild(dd); dv.appendChild(sm); at.appendChild(dv);
     });
     var lad = $("#pg-ladder"); lad.textContent = "";
-    RANKS.forEach(function (R, i) {
+    RANKING.forEach(function (R, i) {
       var li = document.createElement("li"); li.className = i < lv.rankIdx ? "past" : i === lv.rankIdx ? "now" : "";
-      var b = document.createElement("b"); b.textContent = R[1]; var s = document.createElement("span"); s.textContent = R[0] + " EXP";
+      var b = document.createElement("b"); b.textContent = "#" + R[1]; var s = document.createElement("span"); s.textContent = R[0] + " EXP";
       li.appendChild(b); li.appendChild(s); lad.appendChild(li);
     });
     var bl = $("#pg-badges"); bl.textContent = "";
     c.badges.forEach(function (bd) {
       var li = document.createElement("li"); li.className = bd.ok ? "ok" : "";
-      li.innerHTML = '<span class="bd-ico" aria-hidden="true"><svg viewBox="0 0 20 20"><path d="M10 1.5 12.4 6l5 .7-3.6 3.5.9 5L10 12.8 5.3 15.2l.9-5L2.6 6.7l5-.7L10 1.5Z" fill="currentColor"/></svg></span><b></b><span class="bd-d"></span>';
-      li.querySelector("b").textContent = bd.name; li.querySelector(".bd-d").textContent = bd.ok ? "Título obtenido" : bd.desc;
+      li.innerHTML = '<span class="bd-ico" aria-hidden="true"><svg viewBox="0 0 20 20"><path d="M10 2 12.4 7l5.1.6-3.8 3.6 1 5.1L10 13.8l-4.7 2.5 1-5.1L2.5 7.6 7.6 7 10 2Z" fill="currentColor"/></svg></span><b></b><span class="bd-d"></span>';
+      li.querySelector("b").textContent = bd.name; li.querySelector(".bd-d").textContent = bd.ok ? "Arma desbloqueada" : bd.desc;
       bl.appendChild(li);
     });
-    var tb = $("#pg-hist"), rows = c.list.slice().reverse();
+    var rows = c.list.map(function (d) { var p = c.per[d.fecha + "_" + d.sesion]; return { f: d.fecha, a: "Misión · " + (SESSION_NAME[d.sesion] || d.sesion) + (d.completada ? "" : " (en curso)"), d: p.sets + " series", r: String(p.prs.length), x: p.xp }; });
+    Object.keys(c.mper).forEach(function (f) { var m = c.mper[f]; rows.push({ f: f, a: "Partido", d: num(m.doc.minutos) + "' · " + num(m.doc.goles) + " G · " + num(m.doc.asistencias) + " A", r: "—", x: m.xp }); });
+    rows.sort(function (x, y) { return x.f < y.f ? 1 : x.f > y.f ? -1 : 0; });
+    var tb = $("#pg-hist");
     if (rows.length) {
       tb.textContent = "";
-      rows.forEach(function (d) {
-        var p = c.per[d.fecha + "_" + d.sesion], tr = document.createElement("tr");
-        [fmtDate(d.fecha), (SESSION_NAME[d.sesion] || d.sesion) + (d.completada ? "" : " (en curso)"), String(p.sets), String(p.prs.length), "+" + p.xp + " EXP"].forEach(function (v, i) {
-          var td = document.createElement("td"); td.textContent = v; if (i === 4) td.className = "xp"; tr.appendChild(td);
-        });
+      rows.forEach(function (r) {
+        var tr = document.createElement("tr");
+        [fmtDate(r.f), r.a, r.d, r.r, "+" + r.x + " EXP"].forEach(function (v, i) { var td = document.createElement("td"); td.textContent = v; if (i === 4) td.className = "xp"; tr.appendChild(td); });
         tb.appendChild(tr);
       });
     }
@@ -189,6 +220,19 @@
       if (l) { b.textContent = summarize(l.sets, ex) + " · " + fmtDate(l.fecha); b.parentNode.classList.remove("first"); }
     });
     PLAN.sessions.forEach(renderSessionProgress);
+  }
+  function drawRadar(attrs) {
+    var svg = $("#pg-radar"), cx = 160, cy = 138, R = 98, n = attrs.length, h = "";
+    function pt(i, f) { var ang = -Math.PI / 2 + i * 2 * Math.PI / n; return [(cx + Math.cos(ang) * R * f).toFixed(1), (cy + Math.sin(ang) * R * f).toFixed(1)]; }
+    [0.25, 0.5, 0.75, 1].forEach(function (f) { h += '<polygon class="grid" points="' + attrs.map(function (_, i) { return pt(i, f).join(","); }).join(" ") + '"/>'; });
+    attrs.forEach(function (_, i) { var p = pt(i, 1); h += '<line class="axis" x1="' + cx + '" y1="' + cy + '" x2="' + p[0] + '" y2="' + p[1] + '"/>'; });
+    h += '<polygon class="val" points="' + attrs.map(function (x, i) { return pt(i, x.v / 99).join(","); }).join(" ") + '"/>';
+    attrs.forEach(function (x, i) {
+      var p = pt(i, x.v / 99), q = pt(i, 1.2);
+      h += '<circle class="dot" cx="' + p[0] + '" cy="' + p[1] + '" r="3.5"/>';
+      h += '<text x="' + q[0] + '" y="' + (+q[1] + 4) + '" text-anchor="middle">' + x.k + ' <tspan class="v">' + x.v + "</tspan></text>";
+    });
+    svg.innerHTML = h;
   }
   function renderSessionProgress(s) {
     var box = $('[data-sprog="' + s.id + '"]'); if (!box) return;
@@ -320,8 +364,8 @@
       var after = compute(allDocs()), lvA = levelOf(after.xp);
       var pr = (after.per[docId(e.s)] || { prs: [] }).prs.some(function (p) { return p.ex === exId && p.kg === r.kg && p.reps === r.reps; });
       pop(btn, "+" + (after.xp - before.xp) + " EXP" + (pr ? " · récord" : ""), pr);
-      if (lvA.rankIdx > lvB.rankIdx) sysNote("Ascenso de rango", "Rango " + lvA.rank, "Has alcanzado " + RANKS[lvA.rankIdx][0] + " EXP");
-      else if (lvA.n > lvB.n) sysNote("¡Subiste de nivel!", "Nivel " + lvA.n, "Rango " + lvA.rank + " · " + after.xp + " EXP");
+      if (lvA.rankIdx > lvB.rankIdx) sysNote("Subes en el ranking", "#" + lvA.pos, "Antes #" + lvB.pos + " · " + after.xp + " EXP");
+      else if (lvA.n > lvB.n) sysNote("Nivel superado", "Nivel " + lvA.n, "Ranking #" + lvA.pos + " · " + after.xp + " EXP");
       startRest(e.rest, e.name);
       $all('[data-f="kg"]', box).forEach(function (inp) { var j = +inp.getAttribute("data-i"); if (j > i && !(arr[j] && arr[j].done)) { inp.value = r.kg; arr[j].kg = r.kg; } });
     }
@@ -364,7 +408,7 @@
   function hideToast() { toast.hidden = true; undoFn = null; }
   function sysNote(label, big, sub) {
     var n = document.createElement("div"); n.className = "sysnote"; n.setAttribute("role", "status");
-    var l = document.createElement("span"); l.className = "lbl"; l.textContent = "[ SISTEMA ] " + label;
+    var l = document.createElement("span"); l.className = "lbl"; l.textContent = "[ RANKING ] " + label;
     var b = document.createElement("b"); b.textContent = big; var s = document.createElement("span"); s.textContent = sub;
     n.appendChild(l); n.appendChild(b); n.appendChild(s); document.body.appendChild(n);
     setTimeout(function () { n.remove(); }, 2700);
@@ -413,31 +457,73 @@
     d.completada = true; d.completedAt = new Date().toISOString();
     var after = compute(allDocs()), lvA = levelOf(after.xp), p = after.per[docId(sid)] || { prs: [], sets: 0, xp: 0 };
     save(sid, true); renderStats();
-    var newBadges = after.badges.filter(function (b, i) { return b.ok && !before.badges[i].ok; });
-    celebrate({ name: SESSION_NAME[sid], gain: p.xp, total: after.xp, lvB: lvB, lvA: lvA, prs: p.prs, sets: p.sets, week: after.week, streak: after.streak, badges: newBadges });
+    celebrate({ kind: "mision", name: SESSION_NAME[sid], gain: p.xp, before: before, after: after, lvB: lvB, lvA: lvA, prs: p.prs,
+      facts: [[String(p.sets), "series"], [String(p.prs.length), p.prs.length === 1 ? "récord" : "récords"], [after.week + "/4", "misiones semana"]] });
   }
   var modal = $("#modal");
   function celebrate(r) {
-    var up = r.lvA.n > r.lvB.n, rankUp = r.lvA.rankIdx > r.lvB.rankIdx;
-    $(".sheet").classList.toggle("lvup", up);
-    $("#m-title").textContent = rankUp ? "Ascenso: Rango " + r.lvA.rank : up ? "¡Subiste de nivel!" : "Misión completada";
+    var up = r.lvA.n > r.lvB.n, rankUp = r.lvA.rankIdx > r.lvB.rankIdx, flow = r.prs.length > 0;
+    var sheet = $(".sheet");
+    sheet.classList.toggle("lvup", up && !rankUp && !flow); sheet.classList.toggle("flow", flow || rankUp);
+    $(".m-eyebrow").textContent = r.kind === "partido" ? "[ Partido registrado ]" : "[ Misión superada ] " + r.name;
+    $("#m-title").textContent = rankUp ? "¡Subes al #" + r.lvA.pos + "!" : flow ? "Estado flow" : up ? "Nivel " + r.lvA.n : r.kind === "partido" ? "Partido sumado" : "Misión superada";
     $("#m-xp").textContent = "+" + r.gain;
-    $("#m-lv").textContent = "Nivel " + r.lvA.n + " · Rango " + r.lvA.rank;
+    $("#m-lv").textContent = "Nivel " + r.lvA.n + " · Ranking #" + r.lvA.pos;
     $("#m-lvnext").textContent = r.lvA.toNext + " EXP para el nivel " + (r.lvA.n + 1);
     var bar = $("#m-bar"); bar.style.transition = "none"; bar.style.width = (up ? 0 : Math.round(r.lvB.pct * 100)) + "%";
     var facts = $("#m-facts"); facts.textContent = "";
-    [[String(r.sets), "series"], [String(r.prs.length), r.prs.length === 1 ? "récord" : "récords"], [r.week + "/4", "misiones semana"]].forEach(function (f) {
+    r.facts.forEach(function (f) {
       var li = document.createElement("li"), b = document.createElement("b"), s = document.createElement("span");
       b.textContent = f[0]; s.textContent = f[1]; li.appendChild(b); li.appendChild(s); facts.appendChild(li);
     });
     var extra = $("#m-extra"); extra.textContent = "";
-    r.prs.forEach(function (p) { var li = document.createElement("li"); li.className = "pr"; li.textContent = "Límite superado · " + PLAN.ex[p.ex].name + ": " + (p.kg > 0 ? fmtKg(p.kg) + " kg × " : "") + p.reps; extra.appendChild(li); });
-    r.badges.forEach(function (b) { var li = document.createElement("li"); li.className = "bd"; li.textContent = "Título obtenido: " + b.name; extra.appendChild(li); });
+    r.prs.forEach(function (p) { var li = document.createElement("li"); li.className = "pr"; li.textContent = "Récord · " + PLAN.ex[p.ex].name + ": " + (p.kg > 0 ? fmtKg(p.kg) + " kg × " : "") + p.reps; extra.appendChild(li); });
+    if (rankUp) { var lr = document.createElement("li"); lr.className = "bd"; lr.textContent = "Ranking: #" + r.lvB.pos + " → #" + r.lvA.pos; extra.appendChild(lr); }
+    r.after.badges.forEach(function (b, i) { if (b.ok && !r.before.badges[i].ok) { var li = document.createElement("li"); li.className = "bd"; li.textContent = "Arma desbloqueada: " + b.name; extra.appendChild(li); } });
     modal.hidden = false;
     requestAnimationFrame(function () { requestAnimationFrame(function () { bar.style.transition = ""; bar.style.width = Math.round(r.lvA.pct * 100) + "%"; }); });
     $("#m-close").focus();
     confetti();
   }
+
+  /* ---------- Registro de partido ---------- */
+  var mf = { fecha: $("#mf-fecha"), min: $("#mf-min"), gol: $("#mf-gol"), asi: $("#mf-asi"), rpe: $("#mf-rpe"), pier: $("#mf-pier"), notas: $("#mf-notas"), save: $("#mf-save"), status: $("#mf-status") };
+  mf.fecha.value = TODAY; mf.fecha.max = TODAY;
+  function clampN(v, lo, hi) { v = Math.round(num(v)); return Math.max(lo, Math.min(hi, v)); }
+  function fillMatchForm() {
+    var m = matches[mf.fecha.value];
+    if (m) {
+      mf.min.value = num(m.minutos); mf.gol.value = num(m.goles); mf.asi.value = num(m.asistencias);
+      mf.rpe.value = String(m.rpe || 7); mf.pier.value = String(m.piernas || 3); mf.notas.value = m.notas || "";
+      mf.save.textContent = "Actualizar partido"; mf.status.textContent = "Partido del " + fmtDate(m.fecha) + " guardado. Puedes corregir los datos.";
+    } else {
+      mf.min.value = 90; mf.gol.value = 0; mf.asi.value = 0; mf.rpe.value = "7"; mf.pier.value = "3"; mf.notas.value = "";
+      mf.save.textContent = "Guardar partido"; mf.status.textContent = "Al terminar, apunta tus datos: suman EXP y me sirven para ajustar la Pierna A.";
+    }
+    mf.save.disabled = !(loaded && matchesLoaded && canWrite);
+  }
+  mf.fecha.addEventListener("change", fillMatchForm);
+  mf.save.addEventListener("click", function () {
+    if (!db || !canWrite || mf.save.disabled) return;
+    var f = mf.fecha.value;
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(f) || f > TODAY) { mf.status.textContent = "Elige la fecha del partido (hoy o antes)."; return; }
+    var before = compute(allDocs()), lvB = levelOf(before.xp), isNew = !matches[f];
+    var body = { fecha: f, minutos: clampN(mf.min.value, 0, 130), goles: clampN(mf.gol.value, 0, 20), asistencias: clampN(mf.asi.value, 0, 20),
+      rpe: clampN(mf.rpe.value, 1, 10), piernas: clampN(mf.pier.value, 1, 5), notas: String(mf.notas.value || "").slice(0, 200), updatedAt: new Date().toISOString() };
+    var prev = matches[f]; matches[f] = body;
+    var after = compute(allDocs()), lvA = levelOf(after.xp);
+    renderStats(); mf.save.disabled = true; setSync("Guardando…", "busy");
+    db.doc("partidos/" + f).set(body).then(function () {
+      setSync("Guardado en tu cuenta · Claude puede leer tu registro", "ok"); fillMatchForm();
+      if (isNew) celebrate({ kind: "partido", name: "Partido", gain: after.xp - before.xp, before: before, after: after, lvB: lvB, lvA: lvA, prs: [],
+        facts: [[body.minutos + "'", "jugados"], [String(body.goles), body.goles === 1 ? "gol" : "goles"], [String(body.asistencias), body.asistencias === 1 ? "asistencia" : "asistencias"]] });
+      else mf.status.textContent = "Partido actualizado.";
+    }, function () {
+      if (prev) matches[f] = prev; else delete matches[f];
+      renderStats(); mf.save.disabled = false;
+      setSync("No se pudo guardar el partido. Revisa tu conexión e inténtalo de nuevo.", "err");
+    });
+  });
   $("#m-close").addEventListener("click", function () { modal.hidden = true; });
   modal.addEventListener("click", function (e) { if (e.target === modal) modal.hidden = true; });
   document.addEventListener("keydown", function (e) { if (e.key === "Escape" && !modal.hidden) modal.hidden = true; });
@@ -468,9 +554,15 @@
         remote = {};
         snap.docs.forEach(function (doc) { if (doc.exists) remote[doc.id] = doc.data(); });
         if (!snap.metadata.fromCache) clearTimeout(loadTimer);
-        if (!loaded) { loaded = true; renderAllLoggers(); setSync(canWrite ? "Registro conectado · Claude puede leer tus series" : "Vista de solo lectura", canWrite ? "ok" : "off"); }
-        renderStats();
+        if (!loaded) { loaded = true; renderAllLoggers(); setSync(canWrite ? "Registro conectado · Claude puede leer tus series y partidos" : "Vista de solo lectura", canWrite ? "ok" : "off"); }
+        renderStats(); fillMatchForm();
       }, function () { clearTimeout(loadTimer); setSync("Se perdió la conexión con tu registro. Recarga la página para reintentar.", "err"); });
+      db.collection("partidos").onSnapshot(function (snap) {
+        matches = {};
+        snap.docs.forEach(function (doc) { if (doc.exists) matches[doc.id] = doc.data(); });
+        if (!matchesLoaded) { matchesLoaded = true; fillMatchForm(); }
+        renderStats();
+      }, function () { setSync("Se perdió la conexión con tus partidos. Recarga la página para reintentar.", "err"); });
     });
   });
 })();
