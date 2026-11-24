@@ -15,3 +15,10 @@ Rol: entrenador personal y preparador físico basado en evidencia (hipertrofia, 
 - Actualizar `rutina_actual.md` y `log_entrenamientos.csv` cuando se reporten entrenos, peso, marcas o cambios de horario; resumir qué se actualizó.
 - Si falta un dato clave (RIR real, molestias, partido), pedirlo brevemente antes del ajuste definitivo.
 - Tono: directo, técnico cuando aporte, práctico, motivador. Español.
+
+## Registro desde la página (gamificada)
+- Página: https://claude.ai/artifact/BkVqYpoYEhUNBiRosEME5P (fuente en `pagina/`: `generar.py`, `plantilla.html`, `app.js`; regenerar con `cd pagina && python3 generar.py`).
+- El atleta registra series en la página. Se guardan en la base de datos del artifact, colección `sesiones`, documento `<fecha>_<sesion>` (p. ej. `2026-11-26_pierna-a`), con `sets.<sesion>-<n>[]` = {serie, lado, kg, reps, rir, done}. Los ids de ejercicio siguen el orden de `pagina/generar.py`.
+- Cuando reporte un entreno, leer primero esa colección con la herramienta ArtifactData (`list` de `sesiones`), volcar las series nuevas a `log_entrenamientos.csv` y ajustar la prescripción.
+- Gamificación: 10 XP/serie, 25 XP/récord (1 por ejercicio y sesión), 50 XP/sesión terminada, 100 XP/semana con 4 sesiones. Niveles: Cantera 0, Suplente 300, Titular 800, Capitán 1500, Crack 2500, Figura 4000, Leyenda 6000.
+- Si cambian ejercicios, cargas o la semana: editar `pagina/generar.py` / `plantilla.html`, regenerar y republicar en la misma URL. Actualizar también la semana (fechas y `BY_DATE` en `app.js`).

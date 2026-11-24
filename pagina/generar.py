@@ -93,6 +93,52 @@ SESSIONS = [
   ]),
 ]
 
+import json
+
+def parse_rows(sets):
+    m = re.match(r"Izq (\d+) · Der (\d+)", sets)
+    if m:
+        a, b = int(m.group(1)), int(m.group(2))
+        rows = []
+        for n in range(1, max(a, b) + 1):
+            if n <= a: rows.append([n, "izq"])
+            if n <= b: rows.append([n, "der"])
+        return rows
+    m = re.match(r"(\d+) / lado", sets)
+    if m:
+        rows = []
+        for n in range(1, int(m.group(1)) + 1):
+            rows += [[n, "izq"], [n, "der"]]
+        return rows
+    return [[n, None] for n in range(1, int(re.match(r"\d+", sets).group(0)) + 1)]
+
+def parse_kg(load):
+    m = re.search(r"(\d+(?:[.,]\d+)?)\s*kg", load)
+    return float(m.group(1).replace(",", ".")) if m else 0
+
+def parse_rest(rest):
+    m = re.match(r"(\d+):(\d+)", rest)
+    return int(m.group(1)) * 60 + int(m.group(2)) if m else 90
+
+def plan_json():
+    out = {"sessions": [], "ex": {}}
+    for s in SESSIONS:
+        ids = []
+        for i, e in enumerate(s["ex"]):
+            name, img, load, sets, reps, rir, rest, tempo, note, last, nxt, left, approx = e
+            eid = f'{s["id"]}-{i+1}'
+            ids.append(eid)
+            rmin = re.match(r"(\d+)", reps)
+            rirm = re.match(r"(\d)", rir)
+            out["ex"][eid] = {
+                "id": eid, "s": s["id"], "name": name, "rows": parse_rows(sets),
+                "kg": parse_kg(load), "lastre": ("Chaleco" in load or "Peso corporal" in load),
+                "secs": reps.endswith(" s"), "repsMin": int(rmin.group(1)) if rmin else 0,
+                "rir": int(rirm.group(1)) if rirm else None, "rest": parse_rest(rest),
+            }
+        out["sessions"].append({"id": s["id"], "name": s["name"], "ex": ids})
+    return json.dumps(out, ensure_ascii=False).replace("<", "\\u003c")
+
 def portrait(img):
     i = Image.open(f"img/{img}_0.jpg")
     return i.height > i.width * 0.9
@@ -135,9 +181,10 @@ def card(sid, i, e):
     {tempo_html(tempo)}
     <p class="note">{E(note)}</p>
     <div class="track">
-      <div class="{'first' if first else ''}"><span>Última vez</span><b>{E(last)}</b></div>
+      <div class="{'first' if first else ''}"><span>Última vez</span><b data-last="{sid}-{i}">{E(last)}</b></div>
       <div class="next"><span>Siguiente paso</span><b>{E(nxt)}</b></div>
     </div>
+    <div class="log" data-ex="{sid}-{i}"></div>
   </div>
 </article>'''
 
@@ -151,11 +198,13 @@ for s in SESSIONS:
     <div class="ph-title"><span class="md">{s["md"]}</span><h2>{s["name"]}</h2></div>
     <p class="focus">{E(s["focus"])}</p>
     {call}
+    <div class="sprog" data-sprog="{s["id"]}"><div class="sbar"><i></i></div><span class="stext">Registra tus series para sumar XP</span></div>
   </header>
   <div class="warmup"><h4>Calentamiento</h4><ol>{wu}</ol></div>
   <div class="ex-list">{cards}</div>
+  <div class="finish-wrap"><button type="button" class="finish" data-finish="{s["id"]}">Terminar sesión</button><button type="button" class="reopen" data-reopen="{s["id"]}" hidden>Reabrir sesión</button></div>
 </section>''')
 
 tpl = open("plantilla.html").read()
-open("rutina.html", "w").write(tpl.replace("<!--PANELS-->", "\n".join(panels)))
+open("rutina.html", "w").write(tpl.replace("<!--PANELS-->", "\n".join(panels)).replace("/*PLAN*/", plan_json()).replace("/*APP*/", open("app.js").read()))
 print("ok", sum(len(s["ex"]) for s in SESSIONS), "ejercicios")
