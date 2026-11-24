@@ -8,7 +8,7 @@
 | Deporte | Fútbol 11 — #10 / mediapunta ofensivo (sprints repetidos, cambios de dirección, aceleraciones) |
 | Split | 4 días Torso / Pierna |
 | Pierna rezagada (cuádriceps) | **Izquierda** (pierna buena/dominante: **derecha**) |
-| Molestias | **Rodilla izquierda: dolor tipo tendinitis rotuliana** (reportado 2026-11-24, sin diagnóstico). Pendiente: intensidad 0–10, localización, desde cuándo, qué lo provoca |
+| Molestias | **Rodilla izquierda: dolor tipo tendinitis rotuliana** (reportado 2026-11-24, sin diagnóstico). Justo **debajo de la rótula** (polo inferior). Duele sobre todo **después de los partidos**. Antes también al entrenar pierna; ha ido mejorando con fortalecimiento. Cuádriceps izq. visiblemente con menos masa que el der. Pendiente: intensidad 0–10 tras partido y cuánto dura; ¿bandas elásticas? |
 | Partidos | **Martes o miércoles** (varía cada semana). Semana del 23-nov: martes 24, **7:00 PM** |
 | Equipamiento | Mancuernas de 10, 15, 19 y 22 kg (pares), banco, barra de dominadas/fondos, **chaleco lastrado hasta 20 kg** (usado hasta 10 kg) |
 | Nutrición | Ayuno 20:00–10:00 entre semana (14 h), flexible fin de semana |

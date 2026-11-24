@@ -73,8 +73,10 @@ Los partidos son martes o miércoles, así que la semana se organiza **contando 
 | 4 | Peso muerto rumano (2×22 kg) | 3 | 10–15 | 2 | 2:00 | Cadera atrás, tempo 3-1-1-0, estiramiento de isquios |
 | 5 | Gemelo de pie unilateral (22 kg) | 3/lado | 10–15 | 1 | 1:00 | Pausa 2 s abajo en estiramiento máximo |
 
-### Ajuste PROVISIONAL de Pierna A por la rodilla izquierda (tipo tendinitis rotuliana, 24-nov)
-*Hasta confirmar los detalles del dolor. No es un diagnóstico: si hay hinchazón, bloqueo, fallos de la rodilla, dolor en reposo o nocturno, o no mejora en 4–6 semanas → fisioterapeuta.*
+### Ajuste de Pierna A por la rodilla izquierda (tipo tendinitis rotuliana, 24-nov) — aplicado en la página
+*Dolor bajo la rótula, sobre todo tras partidos; el entreno de pierna ya se tolera mejor. Semana 1 conservadora; si el jueves va ≤2/10 y no empeora al día siguiente, vuelven los talones elevados.*
+*Rutina extra: sentadilla en pared 4×30–45 s antes del partido (en el calentamiento) y en días sin pierna si molesta.*
+*Se mantiene la referencia: No es un diagnóstico: si hay hinchazón, bloqueo, fallos de la rodilla, dolor en reposo o nocturno, o no mejora en 4–6 semanas → fisioterapeuta.*
 
 **Regla del dolor (manda sobre todo lo demás):** durante el ejercicio, dolor ≤ 3/10 es aceptable. A la mañana siguiente la rodilla debe estar igual o mejor que antes. Si está peor → la siguiente sesión baja carga o rango.
 
