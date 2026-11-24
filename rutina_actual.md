@@ -46,12 +46,12 @@ Los partidos son martes o miércoles, así que la semana se organiza **contando 
 
 | # | Ejercicio | Series | Reps | RIR | Descanso | Nota técnica |
 |---|---|---|---|---|---|---|
-| 1 | Press plano con mancuernas (22 kg) | 4 | 8–15 | 1–2 | 2:30 | Tempo **3-1-X-0**. Escápulas retraídas y deprimidas, codos ~45–60°. La pausa abajo elimina el rebote: más tensión en el pectoral en posición estirada con carga fija |
-| 2 | Dominadas pronas (peso corporal → lastre) | 4 | 6–10 | 1–2 | 2:30 | Desde colgado completo, pecho a la barra, excéntrica 3 s |
-| 3 | Press inclinado mancuernas 30° (19 kg) | 3 | 10–15 | 1 | 2:00 | Tempo 3-0-X-1. Haz clavicular del pecho |
-| 4 | Remo a una mano apoyado en banco (22 kg) | 3/lado | 10–15 | 1 | 1:30 | Codo hacia la cadera, pausa 1 s arriba, estiramiento completo abajo |
-| 5 | Elevación lateral unilateral inclinada (19 kg) | 3/lado | 8–12 | 1–2 | 1:00 | Agarrado a la barra/rack, cuerpo inclinado ~15°: reduce el brazo de palanca al inicio y permite usar 19 kg sin trampa |
-| 6 | Curl martillo alterno (19 kg) | 3 | 8–12 | 1 | 1:30 | Excéntrica 3 s, sin balanceo |
+| 1 | Press plano con mancuernas (19 kg → 22 kg) | 4 | 8–15 | 1–2 | 2:30 | **Sem 1: 19 kg, 3 series ×19 reps (pendiente confirmar).** Si se confirma, la próxima sesión pasa a 22 kg. Tempo **3-1-X-0**. Escápulas retraídas y deprimidas, codos ~45–60°. La pausa abajo elimina el rebote: más tensión en el pectoral en posición estirada con carga fija |
+| 2 | Dominadas pronas (peso corporal → lastre) | 4 | 6–10 | 1–2 | 2:30 | **Sem 1: 4×7.** Objetivo: 4×8. Desde colgado completo, pecho a la barra, excéntrica 3 s |
+| 3 | Press inclinado mancuernas 30° (19 kg) | 3 | **8–12** | 1 | 2:00 | **Sem 1: 3×8.** Rango ajustado a 8–12 porque es el segundo ejercicio de empuje y llega con fatiga. Objetivo: 9–10 reps en la 1.ª serie. Tempo 3-0-X-1. Trabaja la parte alta del pecho |
+| 4 | Remo a una mano apoyado en banco (22 kg) | 3/lado | 10–15 | 1 | 1:30 | **Sem 1: 3×10.** Objetivo: 3×11–12. Codo hacia la cadera, pausa 1 s arriba, estiramiento completo abajo |
+| 5 | Elevación lateral con dos brazos (10 kg) | 4 | 12–20 | 1 | 1:00 | **Sem 1: 4×12.** Con 10 kg ya no hace falta la versión inclinada a un brazo. El deltoides lateral responde bien a reps altas; sube hasta 4×20 y luego pasa a pausa de 1 s arriba. Codos ligeramente flexionados, sin balanceo |
+| 6 | Curl martillo alterno (19 kg) | 3 | **6–10** | 1 | 1:30 | **Sem 1: 7 reps.** Rango bajado a 6–10 porque 19 kg es carga alta para bíceps. Cuando hagas 3×10, añade una bajada de 4 s. Sin balanceo |
 
 ## PIERNA A (cuádriceps / unilateral)
 
@@ -73,7 +73,7 @@ Los partidos son martes o miércoles, así que la semana se organiza **contando 
 |---|---|---|---|---|---|---|
 | 1 | Fondos en paralelas (PC → lastre) | 4 | 6–12 | 1–2 | 2:30 | Torso inclinado ~20–30° = más pecho. Bajar hasta hombro a la altura del codo, sin dolor anterior de hombro |
 | 2 | Dominadas supinas / agarre neutro | 4 | 6–10 | 1–2 | 2:30 | Excéntrica 3 s. Más bíceps y dorsal en estiramiento |
-| 3 | Press plano mancuernas (22 kg) **con pausa 2 s** | 3 | 8–12 | 2 | 2:00 | Segundo estímulo semanal de pecho, menos fatiga que Torso A |
+| 3 | Press plano mancuernas (19 kg; 22 kg si se confirma 3×19) **con pausa 2 s** | 3 | 8–12 | 2 | 2:00 | Segundo estímulo semanal de pecho, menos fatiga que Torso A |
 | 4 | Press militar sentado (19 kg) | 3 | 8–12 | 1–2 | 2:00 | Respaldo a 75–80°, sin hiperextender lumbar |
 | 5 | Remo pecho apoyado en banco inclinado (2×19 kg) | 3 | 12–15 | 1 | 1:30 | Elimina la trampa lumbar: aísla dorsal/trapecio medio |
 | 6 | Extensión francesa a dos manos (1×22 kg) | 3 | 10–15 | 1 | 1:30 | Sentado, codos arriba: porción larga del tríceps en estiramiento |
