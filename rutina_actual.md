@@ -100,6 +100,26 @@ Los partidos son martes o miércoles, así que la semana se organiza **contando 
 
 ---
 
+## Siguiente paso por ejercicio (Pierna A, Torso B, Pierna B)
+| Sesión | Ejercicio | Al lograr | Siguiente paso |
+|---|---|---|---|
+| Pierna A | Sentadilla búlgara | Izq 4×12 | 2×22 kg |
+| Pierna A | Goblet talones elevados | 3×20 | Bajada de 4 s |
+| Pierna A | Step-up | 2×12 | 2×22 kg |
+| Pierna A | Peso muerto rumano | 3×15 | Bajada de 4 s |
+| Pierna A | Gemelo de pie unilateral | 3×15 | Pausa de 3 s abajo |
+| Torso B | Fondos lastrados | 4×10 | +2,5–5 kg en el chaleco |
+| Torso B | Dominadas supinas | 4×12 | Chaleco 10 kg |
+| Torso B | Press plano con pausa | 3×12 | 22 kg |
+| Torso B | Press militar | 3×12 | 22 kg |
+| Torso B | Remo pecho apoyado | 3×15 | 2×22 kg |
+| Torso B | Extensión francesa | 3×15 | Bajada de 4 s |
+| Pierna B | Hip thrust unilateral | 3×15 | Pausa de 2 s arriba |
+| Pierna B | Split squat | — | Se mantiene a RIR 3 (volumen, no fuerza) |
+| Pierna B | Curl nórdico | 3×6 | Bajada más lenta |
+| Pierna B | Plancha Copenhague | 30 s | Apoyo en el tobillo |
+| Pierna B | Gemelo sentado | 3×20 | A una pierna |
+
 ## Criterios de progresión (aplican a todo el bloque)
 
 1. **Doble progresión por reps:** cuando completes **todas las series en el tope del rango con el RIR objetivo**, la próxima sesión aplica la siguiente palanca, en este orden:

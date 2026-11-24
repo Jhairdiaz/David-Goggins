@@ -1,0 +1,328 @@
+<title>Rutina Bloque 1</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@500&display=swap">
+<style>
+/* Layout: ficha de vestuario — banda oscura con el atleta, semana anclada al partido (MD), pestañas por sesión y fichas de ejercicio con fotos, prescripción, tempo dibujado y seguimiento */
+:root{
+  --bg:#f1f4f2; --surface:#ffffff; --sunken:#e7ece9; --ink:#111915; --muted:#5a6660; --line:#d5ddd8;
+  --accent:#0d6b44; --accent-soft:#dbeee4; --left:#c2410c; --left-soft:#fbe6d8;
+  --band:#0f1a15; --band-ink:#eef3f0; --band-muted:#9eb0a6; --band-line:#2a3b32;
+  --tint:rgba(13,107,68,.16); --photo-bg:#e3e8e5;
+  --display:"Barlow Condensed","Arial Narrow",Arial,sans-serif;
+  --body:Inter,system-ui,-apple-system,"Segoe UI",sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#0b100e; --surface:#131a17; --sunken:#0f1513; --ink:#e3eae6; --muted:#92a299; --line:#25312b;
+  --accent:#55b98d; --accent-soft:#16301f; --left:#fb8f52; --left-soft:#3a2216;
+  --band:#141d18; --band-ink:#eef3f0; --band-muted:#92a299; --band-line:#2a3b32;
+  --tint:rgba(85,185,141,.12); --photo-bg:#1b2420; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0b100e; --surface:#131a17; --sunken:#0f1513; --ink:#e3eae6; --muted:#92a299; --line:#25312b;
+  --accent:#55b98d; --accent-soft:#16301f; --left:#fb8f52; --left-soft:#3a2216;
+  --band:#141d18; --band-ink:#eef3f0; --band-muted:#92a299; --band-line:#2a3b32;
+  --tint:rgba(85,185,141,.12); --photo-bg:#1b2420; color-scheme:dark}
+
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:15px;line-height:1.55;-webkit-font-smoothing:antialiased}
+h1,h2,h3,h4{font-family:var(--display);margin:0;text-wrap:balance;letter-spacing:.005em}
+.in{max-width:1040px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.lbl,.eyebrow,dt,.k,.warmup h4,.track span{font-size:.68rem;font-weight:600;letter-spacing:.11em;text-transform:uppercase}
+
+/* Hero */
+.hero{background:var(--band);color:var(--band-ink);margin-top:calc(-1 * env(safe-area-inset-top,0px));padding-top:calc(env(safe-area-inset-top,0px) + 36px);padding-bottom:30px;border-bottom:1px solid var(--band-line)}
+.hero .in{display:grid;gap:22px}
+.eyebrow{color:var(--band-muted)}
+.hero h1{font-size:clamp(2.6rem,7vw,4rem);line-height:.95;text-transform:uppercase;font-weight:700}
+.hero-sub{margin:8px 0 0;color:var(--band-muted);font-size:.95rem}
+.hero-sub b{color:var(--band-ink);font-weight:600}
+.stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));margin:0;border-top:1px solid var(--band-line)}
+.stats div{padding:14px 16px 0 0;min-width:0}
+.stats div+div{padding-left:16px;border-left:1px solid var(--band-line)}
+.stats dt{color:var(--band-muted)}
+.stats dd{margin:2px 0 0;font-family:var(--display);font-size:2rem;font-weight:600;line-height:1.05;font-variant-numeric:tabular-nums}
+.stats dd small{font-family:var(--body);font-size:.78rem;font-weight:500;color:var(--band-muted);margin-left:4px}
+.kit{margin:0;color:var(--band-muted);font-size:.82rem}
+
+/* Semana */
+.week-wrap{padding-block:26px 6px;display:grid;gap:12px}
+.sec-label{display:flex;justify-content:space-between;align-items:baseline;gap:12px;flex-wrap:wrap}
+.sec-label h2{font-size:1.35rem;text-transform:uppercase}
+.sec-label p{margin:0;color:var(--muted);font-size:.85rem}
+.week{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:6px;list-style:none;margin:0;padding:0}
+.day{position:relative;display:grid;gap:3px;align-content:start;min-height:92px;padding:10px 10px 9px;background:var(--surface);border:1px solid var(--line);border-radius:6px;color:inherit;text-decoration:none;min-width:0}
+a.day:hover{border-color:var(--accent)}
+.day .d{font-size:.68rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+.day .s{font-family:var(--display);font-size:1.15rem;font-weight:600;line-height:1.1}
+.day .m{font-family:var(--mono);font-size:.7rem;color:var(--muted)}
+.day.rest{background:transparent;border-style:dashed}
+.day.rest .s{color:var(--muted);font-weight:500}
+.day.match{background:var(--ink);border-color:var(--ink);color:var(--bg)}
+.day.match .d,.day.match .m{color:var(--bg);opacity:.75}
+.day.done .s::after{content:"";display:inline-block;width:.8em;height:.8em;margin-left:6px;vertical-align:-.05em;background:var(--accent);-webkit-mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M3 8.5 6.5 12 13 4.5' fill='none' stroke='black' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center/contain no-repeat;mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M3 8.5 6.5 12 13 4.5' fill='none' stroke='black' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center/contain no-repeat}
+.day.today{box-shadow:0 0 0 2px var(--accent)}
+.day.today::before{content:"Hoy";position:absolute;top:-9px;right:8px;background:var(--accent);color:var(--surface);font-size:.62rem;font-weight:600;letter-spacing:.08em;text-transform:uppercase;padding:1px 7px;border-radius:99px}
+.day.match.today::before{color:var(--bg)}
+.gloss{display:flex;flex-wrap:wrap;gap:6px 20px;font-size:.82rem;color:var(--muted);margin:0}
+.gloss b{color:var(--ink);font-weight:600}
+
+/* Pestañas */
+.tabs{position:sticky;top:env(safe-area-inset-top,0px);z-index:6;background:var(--bg);border-bottom:1px solid var(--line);margin-top:18px}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--bg)}
+.tabs .in{display:flex;gap:2px;overflow-x:auto;scrollbar-width:none}
+.tabs .in::-webkit-scrollbar{display:none}
+.tab{flex:0 0 auto;display:grid;gap:0;padding:12px 14px 10px;text-decoration:none;color:var(--muted);border-bottom:3px solid transparent;margin-bottom:-1px}
+.tab .t{font-family:var(--display);font-size:1.12rem;font-weight:600;text-transform:uppercase;letter-spacing:.02em;line-height:1.1}
+.tab .sm{font-family:var(--mono);font-size:.66rem}
+.tab:hover{color:var(--ink)}
+.tab[aria-selected="true"]{color:var(--ink);border-bottom-color:var(--accent)}
+.tab:focus-visible,a.day:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:4px}
+
+/* Panel de sesión */
+main{padding-block:24px 48px}
+.panel{display:grid;gap:18px;scroll-margin-top:72px}
+.panel-head{display:grid;gap:6px}
+.ph-title{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.panel-head h2{font-size:clamp(2rem,5vw,2.6rem);text-transform:uppercase;line-height:1}
+.md{font-family:var(--mono);font-size:.75rem;padding:3px 8px;border-radius:4px;background:var(--accent-soft);color:var(--accent)}
+.focus{margin:0;color:var(--muted);max-width:65ch}
+.callout{display:flex;gap:10px;align-items:flex-start;margin:6px 0 0;padding:10px 14px;background:var(--surface);border:1px solid var(--line);border-left:3px solid var(--accent);border-radius:4px;font-size:.9rem;max-width:72ch}
+.callout svg{flex:0 0 16px;width:16px;height:16px;margin-top:3px;color:var(--accent)}
+
+.warmup{display:grid;gap:8px}
+.warmup h4{color:var(--muted)}
+.warmup ol{list-style:none;counter-reset:w;margin:0;padding:0;display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:6px}
+.warmup li{counter-increment:w;display:flex;gap:10px;align-items:baseline;padding:9px 12px;background:var(--sunken);border-radius:4px;font-size:.88rem;min-width:0}
+.warmup li::before{content:counter(w);font-family:var(--mono);font-size:.72rem;color:var(--accent)}
+
+.ex-list{display:grid;gap:14px}
+.ex{display:grid;grid-template-columns:minmax(0,360px) minmax(0,1fr);background:var(--surface);border:1px solid var(--line);border-radius:8px;overflow:hidden;scroll-margin-top:72px}
+.ex-media{background:var(--photo-bg);display:grid;align-content:start}
+.pics{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--line)}
+.pics figure{margin:0;position:relative;aspect-ratio:4/3.4;background:var(--photo-bg);overflow:hidden}
+.pics img{width:100%;height:100%;object-fit:cover;display:block;filter:grayscale(1) contrast(1.06) brightness(1.03)}
+.pics.portrait img{object-fit:contain}
+.pics figure::after{content:"";position:absolute;inset:0;background:var(--tint);mix-blend-mode:multiply;pointer-events:none}
+.pics figcaption{position:absolute;left:8px;bottom:8px;z-index:1;font-size:.6rem;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:#fff;background:rgba(10,16,13,.72);padding:2px 7px;border-radius:3px}
+.approx{margin:0;padding:9px 12px;font-size:.78rem;line-height:1.45;color:var(--left);border-top:1px solid var(--line);background:var(--surface)}
+
+.ex-main{padding:18px 20px;display:grid;gap:14px;align-content:start;min-width:0}
+.ex-head{display:flex;flex-wrap:wrap;align-items:center;gap:6px 12px}
+.idx{font-family:var(--mono);font-size:.78rem;color:var(--muted)}
+.ex-head h3{font-size:1.55rem;line-height:1.05;font-weight:600}
+.tags{display:flex;gap:6px;flex-wrap:wrap}
+.tag{display:inline-flex;align-items:center;gap:4px;font-size:.64rem;font-weight:600;letter-spacing:.08em;text-transform:uppercase;padding:3px 8px;border-radius:99px;line-height:1.2}
+.tag svg{width:11px;height:11px}
+.tag-left{background:var(--left-soft);color:var(--left)}
+.tag-load{background:var(--sunken);color:var(--ink)}
+
+.rx{display:flex;flex-wrap:wrap;gap:14px 28px;align-items:flex-end;padding-bottom:14px;border-bottom:1px solid var(--line)}
+.rx-big{display:flex;align-items:flex-end;gap:10px}
+.rx-big>div{display:grid}
+.rx-big .lbl{color:var(--muted)}
+.num{font-family:var(--display);font-size:2.6rem;font-weight:600;line-height:.95;font-variant-numeric:tabular-nums;white-space:nowrap}
+.num.long{font-size:1.55rem;line-height:1.25}
+.times{font-family:var(--display);font-size:1.6rem;color:var(--muted);line-height:1.2}
+.rx-meta{display:flex;flex-wrap:wrap;gap:8px 24px;margin:0}
+.rx-meta div{display:grid;min-width:0}
+.rx-meta dt{color:var(--muted)}
+.rx-meta dd{margin:0;font-weight:600;font-size:1rem;font-variant-numeric:tabular-nums}
+
+.tempo{display:flex;flex-wrap:wrap;align-items:center;gap:8px 14px}
+.k{color:var(--muted);display:flex;align-items:center;gap:8px}
+.k code{font-family:var(--mono);font-size:.78rem;letter-spacing:0;text-transform:none;color:var(--ink);font-weight:500}
+.segs{display:grid;grid-template-columns:repeat(4,minmax(52px,1fr));gap:3px;flex:1 1 260px;max-width:360px}
+.seg{display:grid;justify-items:center;padding:5px 4px 4px;background:var(--accent-soft);border-radius:3px}
+.seg b{font-family:var(--mono);font-size:.82rem;font-weight:500;color:var(--accent)}
+.seg i{font-style:normal;font-size:.6rem;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.seg.off{background:transparent;border:1px dashed var(--line)}
+.seg.off b{color:var(--muted)}
+.free{font-family:var(--mono);font-size:.82rem;padding:4px 10px;background:var(--accent-soft);color:var(--accent);border-radius:3px}
+
+.note{margin:0;max-width:66ch}
+.track{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--line);border:1px solid var(--line);border-radius:6px;overflow:hidden}
+.track div{display:grid;gap:2px;padding:9px 12px;background:var(--sunken);min-width:0}
+.track span{color:var(--muted)}
+.track b{font-weight:600;font-size:.92rem;font-variant-numeric:tabular-nums}
+.track .first b{color:var(--muted);font-weight:500}
+.track .next{background:var(--accent-soft)}
+.track .next span{color:var(--accent)}
+
+/* Progresión y partido */
+.prose-grid{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,1fr);gap:14px;align-items:start}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:18px 20px;display:grid;gap:12px}
+.card h3{font-size:1.35rem;text-transform:uppercase}
+.card p{margin:0}
+.levers{list-style:none;counter-reset:l;margin:0;padding:0;display:grid;gap:10px}
+.levers li{counter-increment:l;display:grid;grid-template-columns:28px 1fr;gap:10px;align-items:baseline}
+.levers li::before{content:counter(l);font-family:var(--display);font-size:1.4rem;font-weight:600;color:var(--accent);line-height:1}
+.levers b{display:block}
+.levers span{color:var(--muted);font-size:.9rem}
+.ladder{display:flex;flex-wrap:wrap;gap:6px;align-items:center;font-family:var(--mono);font-size:.82rem}
+.ladder span{padding:4px 9px;border:1px solid var(--line);border-radius:4px;background:var(--sunken)}
+.ladder em{font-style:normal;color:var(--muted)}
+.rules{margin:0;padding:0;list-style:none;display:grid;gap:10px}
+.rules li{padding-left:14px;border-left:2px solid var(--line)}
+.rules b{font-weight:600}
+.timeline{list-style:none;margin:0;padding:0;display:grid}
+.timeline li{display:grid;grid-template-columns:118px 1fr;gap:14px;padding:12px 0;border-top:1px solid var(--line)}
+.timeline li:first-child{border-top:0}
+.timeline time{font-family:var(--mono);font-size:.85rem;color:var(--accent);font-weight:500;font-variant-numeric:tabular-nums}
+.timeline li.kick time{color:var(--ink)}
+.timeline li.kick{font-weight:600}
+.timeline p{margin:0}
+.timeline small{display:block;color:var(--muted);font-weight:400;font-size:.86rem;margin-top:2px}
+
+footer.credit{padding-block:0 40px;color:var(--muted);font-size:.78rem}
+
+@media (min-width:821px){
+  .ex{grid-template-columns:minmax(0,270px) minmax(0,1fr)}
+  .ex-media{display:flex;flex-direction:column}
+  .pics{flex:1;grid-template-columns:1fr;grid-auto-rows:minmax(150px,1fr)}
+  .pics figure{aspect-ratio:auto}
+  .pics img{position:absolute;inset:0}
+}
+@media (max-width:820px){
+  .ex{grid-template-columns:1fr}
+  .prose-grid{grid-template-columns:1fr}
+  .stats{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .stats div:nth-child(3){padding-left:0;border-left:0}
+  .stats div:nth-child(n+3){padding-top:12px;margin-top:12px;border-top:1px solid var(--band-line)}
+}
+@media (max-width:620px){
+  .week{grid-template-columns:repeat(4,minmax(0,1fr))}
+  .day{min-height:82px}
+  .ex-main{padding:16px}
+  .num{font-size:2.2rem}
+  .timeline li{grid-template-columns:92px 1fr}
+}
+@media (prefers-reduced-motion:no-preference){html{scroll-behavior:smooth}}
+</style>
+
+<header class="hero">
+  <div class="in">
+    <div>
+      <p class="eyebrow">Plan de entrenamiento · Hipertrofia + fútbol 11 · Mediapunta</p>
+      <h1>Rutina Bloque 1</h1>
+      <p class="hero-sub"><b>Semana 1 de 4</b> · Acumulación · 23–29 nov 2026 · Split Torso / Pierna, 4 días</p>
+    </div>
+    <dl class="stats">
+      <div><dt>Peso de referencia</dt><dd>76<small>kg</small></dd></div>
+      <div><dt>Dominadas máx.</dt><dd>13<small>reps</small></dd></div>
+      <div><dt>Fondos máx.</dt><dd>15<small>reps</small></dd></div>
+      <div><dt>Pierna prioritaria</dt><dd>Izq.<small>+1 serie</small></dd></div>
+    </dl>
+    <p class="kit">Material: mancuernas de 10 · 15 · 19 · 22 kg, banco, barra de dominadas/fondos y chaleco lastrado hasta 20 kg.</p>
+  </div>
+</header>
+
+<section class="in week-wrap" aria-label="Semana">
+  <div class="sec-label"><h2>Semana del partido</h2><p>Todo se cuenta desde el día de partido (MD)</p></div>
+  <ol class="week">
+    <li style="display:contents"><a class="day done" href="#torso-a" data-date="2026-11-23"><span class="d">Lun 23</span><span class="s">Torso A</span><span class="m">MD-1</span></a></li>
+    <li style="display:contents"><a class="day match" href="#partido" data-date="2026-11-24"><span class="d">Mar 24</span><span class="s">Partido</span><span class="m">MD · 7:00 PM</span></a></li>
+    <li style="display:contents"><div class="day rest" data-date="2026-11-25"><span class="d">Mié 25</span><span class="s">Descanso</span><span class="m">MD+1</span></div></li>
+    <li style="display:contents"><a class="day" href="#pierna-a" data-date="2026-11-26"><span class="d">Jue 26</span><span class="s">Pierna A</span><span class="m">MD+2</span></a></li>
+    <li style="display:contents"><a class="day" href="#torso-b" data-date="2026-11-27"><span class="d">Vie 27</span><span class="s">Torso B</span><span class="m">MD+3</span></a></li>
+    <li style="display:contents"><a class="day" href="#pierna-b" data-date="2026-11-28"><span class="d">Sáb 28</span><span class="s">Pierna B</span><span class="m">MD+4</span></a></li>
+    <li style="display:contents"><div class="day rest" data-date="2026-11-29"><span class="d">Dom 29</span><span class="s">Descanso</span><span class="m"></span></div></li>
+  </ol>
+  <p class="gloss"><span><b>RIR</b> reps que quedan en recámara</span><span><b>Tempo</b> bajada · pausa · subida · pausa arriba (X = explosivo)</span><span><b>Izquierda primero</b> la derecha iguala sus reps, nunca más</span></p>
+</section>
+
+<nav class="tabs" aria-label="Sesiones">
+  <div class="in" role="tablist">
+    <a class="tab" role="tab" id="t-torso-a" href="#torso-a"><span class="t">Torso A</span><span class="sm">MD-1</span></a>
+    <a class="tab" role="tab" id="t-pierna-a" href="#pierna-a"><span class="t">Pierna A</span><span class="sm">MD+2</span></a>
+    <a class="tab" role="tab" id="t-torso-b" href="#torso-b"><span class="t">Torso B</span><span class="sm">MD+3</span></a>
+    <a class="tab" role="tab" id="t-pierna-b" href="#pierna-b"><span class="t">Pierna B</span><span class="sm">MD+4</span></a>
+    <a class="tab" role="tab" id="t-progresion" href="#progresion"><span class="t">Progresión</span><span class="sm">reglas</span></a>
+    <a class="tab" role="tab" id="t-partido" href="#partido"><span class="t">Día de partido</span><span class="sm">nutrición</span></a>
+  </div>
+</nav>
+
+<main class="in">
+<!--PANELS-->
+
+<section class="panel" id="progresion" data-tab="progresion" aria-labelledby="t-progresion">
+  <header class="panel-head">
+    <div class="ph-title"><span class="md">Bloque 1</span><h2>Cómo progresar</h2></div>
+    <p class="focus">Con pesos fijos, la sobrecarga sale de reps, tempo, pausas y lastre. Cada ficha muestra su siguiente paso concreto; estas son las reglas generales detrás.</p>
+  </header>
+  <div class="prose-grid">
+    <div class="card">
+      <h3>Orden de palancas</h3>
+      <p>Cuando completas <b>todas las series en el tope del rango</b> con el RIR objetivo, en la siguiente sesión aplicas la palanca que sigue:</p>
+      <ol class="levers">
+        <li><div><b>Subir al siguiente peso</b><span>Y volver al inicio del rango de reps.</span></div></li>
+        <li><div><b>Más tiempo bajo tensión</b><span>Ya en 22 kg: +1 s de bajada o una pausa (3-1-X-0 → 4-2-X-0).</span></div></li>
+        <li><div><b>1½ reps o menos descanso</b><span>15–30 s menos, solo en accesorios.</span></div></li>
+        <li><div><b>Variante más difícil</b><span>Por ejemplo, press con déficit o a un brazo.</span></div></li>
+      </ol>
+      <div class="ladder" aria-label="Escalera de pesos"><span>10 kg</span><em>→</em><span>15 kg</span><em>→</em><span>19 kg</span><em>→</em><span>22 kg</span></div>
+    </div>
+    <div class="card">
+      <h3>Reglas específicas</h3>
+      <ul class="rules">
+        <li><b>Dominadas y fondos lastrados.</b> Al hacer 4×10 con RIR 1–2, +2,5–5 kg al chaleco y vuelta a 4×6. Pasados los 20 kg, chaleco más mancuerna entre los pies.</li>
+        <li><b>Pierna izquierda.</b> Si con el mismo peso saca 2 o más reps menos que la derecha, mantiene su serie extra. Se revisa cada 4 semanas.</li>
+        <li><b>Agujetas tras el partido.</b> En Pierna A: RIR +1 y fuera la última serie de cada ejercicio. La serie extra de la izquierda se queda.</li>
+        <li><b>Semana 5.</b> Descarga: −40 % de series, RIR 3–4, y re-test de marcas.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section class="panel" id="partido" data-tab="partido" aria-labelledby="t-partido">
+  <header class="panel-head">
+    <div class="ph-title"><span class="md">MD</span><h2>Día de partido</h2></div>
+    <p class="focus">Martes 24 · saque a las 7:00 PM. La ventana de ayuno se respeta hasta la ruptura; ese día cierra más tarde porque manda la recuperación.</p>
+  </header>
+  <div class="prose-grid">
+    <div class="card">
+      <h3>Comidas</h3>
+      <ol class="timeline">
+        <li><time>10:00</time><p>Ruptura del ayuno habitual<small>Crema de arroz, banano, proteína de vainilla y yogur griego. Creatina.</small></p></li>
+        <li><time>14:30–15:00</time><p>Comida principal, ~4 h antes<small>Rica en carbohidratos, proteína moderada, poca grasa y fibra para que la digestión no pese.</small></p></li>
+        <li><time>17:30–18:00</time><p>Snack ligero si hay hambre<small>Banano o una porción pequeña de crema de arroz.</small></p></li>
+        <li class="kick"><time>19:00</time><p>Partido</p></li>
+        <li><time>~21:00–21:30</time><p>Comida post-partido<small>Proteína y carbohidratos. Al día siguiente, ruptura entre las 10:00 y las 11:00.</small></p></li>
+      </ol>
+    </div>
+    <div class="card">
+      <h3>Después del partido</h3>
+      <ul class="rules">
+        <li><b>MD+1 (miércoles).</b> Descanso: caminar y movilidad suave.</li>
+        <li><b>Reporta antes de Pierna A.</b> Agujetas (sobre todo en la izquierda), molestias y sensación general. Con eso se ajusta el RIR del jueves.</li>
+        <li><b>Fitia.</b> Registra todo como siempre, incluida la comida post-partido.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+</main>
+
+<footer class="in credit">Fotos de referencia: Free Exercise DB (dominio público). Cuando la foto muestra una variante parecida, la ficha indica en naranja cómo hacerlo con tu material.</footer>
+
+<script>
+(function(){
+  var ids=["torso-a","pierna-a","torso-b","pierna-b","progresion","partido"];
+  var byDate={"2026-11-23":"torso-a","2026-11-24":"partido","2026-11-25":"pierna-a","2026-11-26":"pierna-a","2026-11-27":"torso-b","2026-11-28":"pierna-b"};
+  var d=new Date();
+  var today=d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");
+  document.querySelectorAll(".day[data-date]").forEach(function(el){ if(el.getAttribute("data-date")===today) el.classList.add("today"); });
+  function show(id){
+    if(ids.indexOf(id)<0) id=byDate[today]||"torso-a";
+    document.querySelectorAll(".panel[data-tab]").forEach(function(p){ p.hidden = p.getAttribute("data-tab")!==id; });
+    document.querySelectorAll(".tab").forEach(function(t){
+      var on=t.getAttribute("href")==="#"+id;
+      t.setAttribute("aria-selected", on?"true":"false");
+      if(on){ var c=t.parentNode; if(c.scrollWidth>c.clientWidth) c.scrollLeft=Math.max(0,t.offsetLeft-24); }
+    });
+  }
+  function current(){ return (location.hash||"").slice(1); }
+  show(current());
+  window.addEventListener("hashchange",function(){ show(current()); });
+})();
+</script>
