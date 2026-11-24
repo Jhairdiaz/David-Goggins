@@ -9,16 +9,21 @@
 | Split | 4 días Torso / Pierna |
 | Pierna rezagada (cuádriceps) | **Izquierda** |
 | Partidos | **Martes o miércoles** (varía cada semana). Semana del 23-nov: martes 24, **7:00 PM** |
-| Equipamiento | Mancuernas de 10 kg, 19 kg y 22 kg (pares), banco, barra de dominadas/fondos |
+| Equipamiento | Mancuernas de 10, 15, 19 y 22 kg (pares), banco, barra de dominadas/fondos |
 | Nutrición | Ayuno 20:00–10:00 entre semana (14 h), flexible fin de semana |
 | Ruptura de ayuno (10:00) | Crema de arroz + banano + proteína vainilla + yogur griego |
 | Suplementación | Creatina |
 | Registro nutricional | Fitia Premium |
 
+## Marcas
+| Fecha | Marca |
+|---|---|
+| 2026-11-23 | Dominadas pronas: **13 reps máx.** en una serie (peso corporal) |
+| 2026-11-23 | Press plano 19 kg: 3×10 a RIR 1 |
+
 ## Datos pendientes (completar)
 - [ ] Hora habitual de entrenamiento (¿antes o después de las 10:00?)
-- [ ] Marcas: fondos máx. reps · dominadas máx. en una serie (sem 1: 7×4)
-- [ ] ¿Hay más pesos además de 10, 19 y 22 kg?
+- [ ] Marcas: fondos máx. reps
 - [ ] ¿Tienes mochila/cinturón para lastre? ¿Bandas elásticas?
 - [ ] Molestias o lesiones previas (rodilla, aductor, isquios, hombro)
 - [ ] Altura, edad y calorías/macros actuales en Fitia (opcional, para ajustar superávit)

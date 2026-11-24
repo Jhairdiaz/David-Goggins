@@ -46,20 +46,20 @@ Los partidos son martes o miércoles, así que la semana se organiza **contando 
 
 | # | Ejercicio | Series | Reps | RIR | Descanso | Nota técnica |
 |---|---|---|---|---|---|---|
-| 1 | Press plano con mancuernas (19 kg) | 4 | 10–15 | 1–2 | 2:30 | **Sem 1: 3×10.** Se añade una 4.ª serie. Tempo **3-1-X-0**: escápulas juntas y abajo, codos a 45–60°, pausa abajo sin rebote para cargar el pectoral en estiramiento |
-| 2 | Dominadas pronas (series cortas) | 6 | 4–6 | 1–2 | 2:00 | **Sem 1: 7×4.** Con un máximo bajo por serie, varias series cortas de buena técnica acumulan más volumen de calidad que pocas series al fallo. Desde colgado completo, bajada de 3 s |
+| 1 | Press plano con mancuernas (19 kg) | 4 | 10–15 | 1–2 | 2:30 | **Sem 1: 3×10 a RIR 1.** Se añade una 4.ª serie. Tempo **3-1-X-0**: escápulas juntas y abajo, codos a 45–60°, pausa abajo sin rebote para cargar el pectoral en estiramiento |
+| 2 | Dominadas pronas **lastradas** (mancuerna 10 kg entre los pies o en mochila) | 4 | 6–10 | 1–2 | 2:30 | **Sem 1: 4×7 sin lastre; máx. 13 en una serie.** Con 13 reps de máximo, 4×7 queda lejos del fallo (RIR ~5). El lastre devuelve el estímulo al rango eficaz. Desde colgado completo, pecho a la barra, bajada de 3 s |
 | 3 | Press inclinado mancuernas 30° (19 kg) | 3 | 8–12 | 1 | 2:00 | **Sem 1: 3×8.** Llega con fatiga del press plano. Tempo 3-0-X-1. Trabaja la parte alta del pecho |
 | 4 | Remo a una mano apoyado en banco (22 kg) | 3/lado | 10–15 | 1 | 1:30 | **Sem 1: 3×10.** Codo hacia la cadera, pausa 1 s arriba, estiramiento completo abajo |
 | 5 | Elevación lateral con dos brazos (10 kg) | 4 | 12–20 | 1–2 | 1:00 | **Sem 1: 4×12.** Con 10 kg no hace falta la versión inclinada a un brazo. Codos un poco flexionados, sin impulso |
-| 6 | Curl martillo alterno (19 kg) | 3 | 6–10 | 1 | 1:30 | **Sem 1: 3×7.** 19 kg es carga alta para el bíceps, así que el rango baja a 6–10. Bajada de 3 s, sin balanceo |
+| 6 | Curl martillo alterno (**15 kg**) | 3 | 8–12 | 1 | 1:30 | **Sem 1: 3×7 con 19 kg.** Con 15 kg trabajas en un rango mejor y con más control de la bajada (3 s). Sin balanceo |
 
 **Progresión específica de Torso A:**
 - Press plano: cuando hagas 4×15 con 19 kg → 22 kg a 4×8–10.
 - Press inclinado: cuando hagas 3×12 → 22 kg.
-- Dominadas: suma 1 rep por serie cuando todas lleguen al tope (6×5 → 6×6). Después de 6×6 → 4×8, luego 4×10, y entonces se añade lastre.
+- Dominadas lastradas: cuando hagas 4×10 → pasas de 10 a 15 kg y vuelves a 4×6 (luego 19 y 22 kg).
 - Remo: 3×15 → 4 series con bajada de 3 s.
 - Elevaciones: 4×20 → pausa de 1 s arriba.
-- Curl martillo: 3×10 → 4 series.
+- Curl martillo: cuando hagas 3×12 con 15 kg → 19 kg.
 
 ## PIERNA A (cuádriceps / unilateral)
 
@@ -80,9 +80,9 @@ Los partidos son martes o miércoles, así que la semana se organiza **contando 
 | # | Ejercicio | Series | Reps | RIR | Descanso | Nota técnica |
 |---|---|---|---|---|---|---|
 | 1 | Fondos en paralelas (PC → lastre) | 4 | 6–12 | 1–2 | 2:30 | Torso inclinado ~20–30° = más pecho. Bajar hasta hombro a la altura del codo, sin dolor anterior de hombro |
-| 2 | Dominadas supinas / agarre neutro | 5 | 4–6 | 1–2 | 2:00 | Series cortas, igual que en Torso A. Bajada de 3 s. Más bíceps y dorsal en estiramiento |
+| 2 | Dominadas supinas / agarre neutro (peso corporal) | 4 | 8–12 | 1–2 | 2:00 | Sin lastre y con más reps: complementa el trabajo pesado de Torso A. Bajada de 3 s. Al hacer 4×12 → 10 kg de lastre |
 | 3 | Press plano mancuernas (19 kg) **con pausa 2 s** | 3 | 8–12 | 2 | 2:00 | Segundo estímulo semanal de pecho, menos fatiga que Torso A |
-| 4 | Press militar sentado (19 kg) | 3 | 8–12 | 1–2 | 2:00 | Respaldo a 75–80°, sin hiperextender lumbar |
+| 4 | Press militar sentado (19 kg; 15 kg si no llegas a 8) | 3 | 8–12 | 1–2 | 2:00 | Respaldo a 75–80°, sin hiperextender lumbar |
 | 5 | Remo pecho apoyado en banco inclinado (2×19 kg) | 3 | 12–15 | 1 | 1:30 | Elimina la trampa lumbar: aísla dorsal/trapecio medio |
 | 6 | Extensión francesa a dos manos (1×22 kg) | 3 | 10–15 | 1 | 1:30 | Sentado, codos arriba: porción larga del tríceps en estiramiento |
 
@@ -103,11 +103,11 @@ Los partidos son martes o miércoles, así que la semana se organiza **contando 
 ## Criterios de progresión (aplican a todo el bloque)
 
 1. **Doble progresión por reps:** cuando completes **todas las series en el tope del rango con el RIR objetivo**, la próxima sesión aplica la siguiente palanca, en este orden:
-   1. Pasar de 19 → 22 kg (si aplica).
+   1. Subir al siguiente peso disponible (10 → 15 → 19 → 22 kg).
    2. Ya en 22 kg: **añadir 1 s a la excéntrica o una pausa** (3-1-X-0 → 4-2-X-0) y volver al inicio del rango.
    3. Si con tempo lento ya topas: **1½ reps** (rango inferior + completo) o **reducir descanso 15–30 s** (solo en accesorios).
    4. Siguiente variante más difícil (ej. press plano → press con déficit o unilateral).
-2. **Dominadas y fondos:** al lograr **4×10 (dominadas) / 4×12 (fondos)** con RIR 1–2 → añadir lastre (mochila con 5 kg, luego mancuerna 19 kg entre las piernas/cinturón) y volver a 4×6.
+2. **Dominadas y fondos:** al lograr **4×10 (dominadas lastradas) / 4×12 (fondos)** con RIR 1–2 → subir lastre por escalones de mancuerna (10 → 15 → 19 → 22 kg) y volver a 4×6.
 3. **Pierna rezagada:** si la diferencia de reps con el mismo peso es ≥2, mantener la serie extra para [R]. Re-evaluar cada 4 semanas.
 4. **Pierna A en MD+2 con agujetas fuertes o fatiga alta tras el partido:** RIR +1 y quitar la última serie de cada ejercicio (la serie extra de la izquierda se mantiene). **Torso A en MD-1:** RIR 2, nunca al fallo.
 5. **Semana 5:** descarga (–40 % series, RIR 3–4) y re-test.
