@@ -527,6 +527,22 @@ main{padding-block:16px calc(96px + env(safe-area-inset-bottom,0px))}
 .qstats dd.dd-sm{font-size:1.05rem;line-height:1.2;padding-top:6px}
 .qstats>div>small{font-size:.72rem;color:var(--muted);line-height:1.3}
 .qstats .pips{margin-top:6px}
+.knee{display:grid;gap:10px;padding:14px}
+.kn-top{display:flex;align-items:baseline;justify-content:space-between;gap:8px;flex-wrap:wrap}
+.kn-top h2{margin:0;font-size:1.15rem}
+.kn-sub{font-size:.75rem;color:var(--muted)}
+.kn-btns{display:grid;grid-template-columns:repeat(11,minmax(0,1fr));gap:3px}
+.kn-btns button{height:36px;min-width:0;padding:0;border:1px solid rgba(47,125,255,.3);background:rgba(2,8,22,.85);color:var(--ink);font-family:var(--mono);font-size:.85rem;cursor:pointer}
+.kn-btns button[aria-pressed="true"]{background:var(--kc,#2f7dff);border-color:var(--kc,#2f7dff);color:#02050d;font-weight:700}
+.kn-btns button:disabled{opacity:.5;cursor:default}
+.kn-btns button:focus-visible{outline:2px solid var(--accent2);outline-offset:1px}
+.kn-rec{margin:0;font-size:.85rem;line-height:1.4;padding:8px 10px;border-left:3px solid var(--muted);background:rgba(47,125,255,.06)}
+.kn-rec[data-lvl="ok"]{border-color:#2ecc71}.kn-rec[data-lvl="mid"]{border-color:#f2c94c}.kn-rec[data-lvl="hi"]{border-color:var(--left)}
+.kn-strip{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:4px;align-items:end}
+.kn-d{display:grid;gap:3px;justify-items:center;font-size:.65rem;color:var(--muted);font-family:var(--mono)}
+.kn-d i{display:block;width:100%;height:34px;background:rgba(47,125,255,.08);position:relative}
+.kn-d i b{position:absolute;left:0;right:0;bottom:0;background:var(--kc,#2f7dff)}
+.kn-d.kn-now span{color:var(--ink);font-weight:700}
 .week-wrap{padding:0;gap:10px}
 /* Entrenar */
 .seg-nav{position:sticky;top:calc(56px + env(safe-area-inset-top,0px));z-index:8;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:4px;padding:8px 0;background:rgba(2,5,13,.94);backdrop-filter:blur(6px)}
@@ -626,6 +642,13 @@ body:has(.timer:not([hidden])) main{padding-bottom:180px}
     <div><dt>Partido</dt><dd class="dd-sm" id="st-match">Pendiente</dd></div>
   </dl>
 
+  <section class="knee card" aria-labelledby="kn-h">
+    <div class="kn-top"><h2 id="kn-h">Rodilla izquierda hoy</h2><span class="kn-sub">Dolor de 0 a 10 al levantarte</span></div>
+    <div class="kn-btns" id="kn-btns" role="group" aria-label="Dolor de rodilla de 0 a 10"></div>
+    <p class="kn-rec" id="kn-rec" data-lvl="">Marca cómo amaneció la rodilla y te digo cómo entrenar hoy.</p>
+    <div class="kn-strip" id="kn-strip" aria-label="Últimos 7 días"></div>
+  </section>
+
   <section class="week-wrap" aria-label="Semana">
     <div class="sec-label"><h2>Semana del partido</h2><p>Bloque 1 · semana 1 de 4 · 23–29 nov</p></div>
     <ol class="week">
@@ -662,11 +685,13 @@ body:has(.timer:not([hidden])) main{padding-bottom:180px}
       <p class="mf-note" id="mf-status">Al terminar, apunta tus datos: suman EXP y me sirven para ajustar la Pierna A.</p>
       <div class="mf-grid">
         <label>Fecha<input type="date" id="mf-fecha"></label>
-        <label>Minutos jugados<input type="number" id="mf-min" inputmode="numeric" min="0" max="130" value="90"></label>
+        <label>Formato<select id="mf-fmt"><option value="6">Fútbol 6</option><option value="8" selected>Fútbol 8</option><option value="11">Fútbol 11</option></select></label>
+        <label>Minutos jugados<input type="number" id="mf-min" inputmode="numeric" min="0" max="130" value="60"></label>
         <label>Goles<input type="number" id="mf-gol" inputmode="numeric" min="0" max="20" value="0"></label>
         <label>Asistencias<input type="number" id="mf-asi" inputmode="numeric" min="0" max="20" value="0"></label>
         <label>Esfuerzo (RPE)<select id="mf-rpe"><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option><option>6</option><option selected>7</option><option>8</option><option>9</option><option>10</option></select></label>
         <label>Piernas al terminar<select id="mf-pier"><option value="1">1 · Muy cargadas</option><option value="2">2 · Cargadas</option><option value="3" selected>3 · Normales</option><option value="4">4 · Bien</option><option value="5">5 · Frescas</option></select></label>
+        <label>Rodilla izq. 0–10<select id="mf-rod"><option value="">—</option><option>0</option><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option><option>6</option><option>7</option><option>8</option><option>9</option><option>10</option></select></label>
         <label class="wide">Molestias o notas<input type="text" id="mf-notas" maxlength="200" placeholder="Ej.: cuádriceps izquierdo cargado"></label>
       </div>
       <button type="button" class="finish" id="mf-save" disabled>Guardar partido</button>

@@ -67,7 +67,7 @@
   window.addEventListener("hashchange", route);
 
   /* ---------- Estado ---------- */
-  var db = null, canWrite = false, loaded = false, remote = {}, drafts = {}, matches = {}, matchesLoaded = false;
+  var db = null, canWrite = false, loaded = false, remote = {}, drafts = {}, matches = {}, matchesLoaded = false, knees = {}, kneesLoaded = false;
   var syncEl = $("#sync");
   function setSync(text, kind) { syncEl.textContent = text; syncEl.setAttribute("data-kind", kind || ""); }
   function hasDone(d) { var s = (d && d.sets) || {}; return Object.keys(s).some(function (ex) { return (s[ex] || []).some(function (r) { return r && r.done; }); }); }
@@ -148,7 +148,7 @@
       mper[m.fecha] = { xp: mx, doc: m };
       var g = num(m.goles), a = num(m.asistencias);
       maxG = Math.max(maxG, g); maxA = Math.max(maxA, a); maxGA = Math.max(maxGA, g + a);
-      if (g >= 1 && a >= 1) golYPase = true; if (num(m.minutos) >= 90) full90 = true;
+      if (g >= 1 && a >= 1) golYPase = true; if (num(m.minutos) >= (num(m.formato) === 11 ? 90 : 60)) full90 = true;
       gRun = g >= 1 ? gRun + 1 : 0; gRunMax = Math.max(gRunMax, gRun);
       if ((weeks[weekKey(m.fecha)] || 0) >= WEEK_GOAL) completoSemana = true;
       if (weekKey(m.fecha) === cur) matchWeek = mper[m.fecha];
@@ -174,7 +174,8 @@
       { id: "racha", name: "Racha goleadora", desc: "Marca en 3 partidos seguidos", ok: gRunMax >= 3 },
       { id: "g10", name: "Diez goles", desc: "Suma 10 goles", ok: goals >= 10 },
       { id: "a10", name: "Diez asistencias", desc: "Suma 10 asistencias", ok: assists >= 10 },
-      { id: "noventa", name: "Noventa minutos", desc: "Juega un partido completo (90')", ok: full90 },
+      { id: "noventa", name: "Todo el partido", desc: "Juega el partido completo (60' en F6/F8, 90' en F11)", ok: full90 },
+      { id: "rodilla", name: "Cuerpo de élite", desc: "7 chequeos de rodilla", ok: Object.keys(knees).length >= 7 },
       { id: "fijo", name: "Titular fijo", desc: "Registra 10 partidos", ok: mcount >= 10 },
       { id: "completo", name: "Atleta completo", desc: "Semana perfecta con partido incluido", ok: completoSemana }
     ];
@@ -256,7 +257,7 @@
       bl.appendChild(li);
     });
     var rows = c.list.map(function (d) { var p = c.per[d.fecha + "_" + d.sesion]; return { f: d.fecha, a: "Misión · " + (SESSION_NAME[d.sesion] || d.sesion) + (d.completada ? "" : " (en curso)"), d: p.sets + " series", r: String(p.prs.length), x: p.xp }; });
-    Object.keys(c.mper).forEach(function (f) { var m = c.mper[f]; rows.push({ f: f, a: "Partido", d: num(m.doc.minutos) + "' · " + num(m.doc.goles) + " G · " + num(m.doc.asistencias) + " A", r: "—", x: m.xp }); });
+    Object.keys(c.mper).forEach(function (f) { var m = c.mper[f]; rows.push({ f: f, a: "Partido F" + (num(m.doc.formato) || 8), d: num(m.doc.minutos) + "' · " + num(m.doc.goles) + " G · " + num(m.doc.asistencias) + " A", r: "—", x: m.xp }); });
     rows.sort(function (x, y) { return x.f < y.f ? 1 : x.f > y.f ? -1 : 0; });
     var tb = $("#pg-hist");
     if (rows.length) {
@@ -559,7 +560,7 @@
   }
 
   /* ---------- Registro de partido ---------- */
-  var mf = { fecha: $("#mf-fecha"), min: $("#mf-min"), gol: $("#mf-gol"), asi: $("#mf-asi"), rpe: $("#mf-rpe"), pier: $("#mf-pier"), notas: $("#mf-notas"), save: $("#mf-save"), status: $("#mf-status") };
+  var mf = { fecha: $("#mf-fecha"), fmt: $("#mf-fmt"), rod: $("#mf-rod"), min: $("#mf-min"), gol: $("#mf-gol"), asi: $("#mf-asi"), rpe: $("#mf-rpe"), pier: $("#mf-pier"), notas: $("#mf-notas"), save: $("#mf-save"), status: $("#mf-status") };
   mf.fecha.value = TODAY; mf.fecha.max = TODAY;
   function clampN(v, lo, hi) { v = Math.round(num(v)); return Math.max(lo, Math.min(hi, v)); }
   function fillMatchForm() {
@@ -567,21 +568,55 @@
     if (m) {
       mf.min.value = num(m.minutos); mf.gol.value = num(m.goles); mf.asi.value = num(m.asistencias);
       mf.rpe.value = String(m.rpe || 7); mf.pier.value = String(m.piernas || 3); mf.notas.value = m.notas || "";
+      mf.fmt.value = String(m.formato || 8); mf.rod.value = m.rodilla == null ? "" : String(m.rodilla);
       mf.save.textContent = "Actualizar partido"; mf.status.textContent = "Partido del " + fmtDate(m.fecha) + " guardado. Puedes corregir los datos.";
     } else {
-      mf.min.value = 90; mf.gol.value = 0; mf.asi.value = 0; mf.rpe.value = "7"; mf.pier.value = "3"; mf.notas.value = "";
+      mf.fmt.value = "8"; mf.rod.value = ""; mf.min.value = 60; mf.gol.value = 0; mf.asi.value = 0; mf.rpe.value = "7"; mf.pier.value = "3"; mf.notas.value = "";
       mf.save.textContent = "Guardar partido"; mf.status.textContent = "Al terminar, apunta tus datos: suman EXP y me sirven para ajustar la Pierna A.";
     }
     mf.save.disabled = !(loaded && matchesLoaded && canWrite);
   }
   mf.fecha.addEventListener("change", fillMatchForm);
+  mf.fmt.addEventListener("change", function () { var v = num(mf.min.value); if (v === 60 || v === 90) mf.min.value = mf.fmt.value === "11" ? 90 : 60; });
+
+  /* ---------- Chequeo diario de la rodilla izquierda ---------- */
+  var KN_COLOR = function (v) { return v <= 3 ? "#2ecc71" : v <= 5 ? "#f2c94c" : "#ff4f6e"; };
+  var knBtns = $("#kn-btns"), knRec = $("#kn-rec"), knStrip = $("#kn-strip");
+  for (var kv = 0; kv <= 10; kv++) { var kb = document.createElement("button"); kb.type = "button"; kb.textContent = kv; kb.setAttribute("data-v", kv); kb.setAttribute("aria-pressed", "false"); kb.setAttribute("aria-label", "Dolor " + kv + " de 10"); kb.style.setProperty("--kc", KN_COLOR(kv)); knBtns.appendChild(kb); }
+  function addDays(iso, n) { var p = iso.split("-").map(Number); return new Date(Date.UTC(p[0], p[1] - 1, p[2] + n)).toISOString().slice(0, 10); }
+  function renderKnee() {
+    var k = knees[TODAY], v = k ? num(k.dolor) : null, leg = BY_DATE[TODAY] === "pierna-a" || BY_DATE[TODAY] === "pierna-b";
+    $all("#kn-btns button").forEach(function (b) { b.setAttribute("aria-pressed", String(v !== null && +b.getAttribute("data-v") === v)); b.disabled = !(kneesLoaded && canWrite); });
+    if (v === null) { knRec.setAttribute("data-lvl", ""); knRec.textContent = "Marca cómo amaneció la rodilla y te digo cómo entrenar hoy."; }
+    else if (v <= 3) { knRec.setAttribute("data-lvl", "ok"); knRec.textContent = v + "/10 · Verde. " + (leg ? "Sesión de pierna completa, con la regla de dolor ≤3/10." : "Día normal. Si quieres, 3 × 45 s de sentadilla en pared."); }
+    else if (v <= 5) { knRec.setAttribute("data-lvl", "mid"); knRec.textContent = v + "/10 · Ámbar. " + (leg ? "Entrena pierna con RIR +1, quita la última serie y baja solo hasta donde no pase de 3/10." : "Evita saltos y sprints hoy. Sentadilla en pared 4 × 45 s."); }
+    else { knRec.setAttribute("data-lvl", "hi"); knRec.textContent = v + "/10 · Rojo. Hoy nada de pierna pesada ni saltos: solo isométricos suaves sin dolor. Si sigue así 2–3 días, o hay hinchazón, ve al fisioterapeuta."; }
+    knStrip.textContent = "";
+    for (var i = 6; i >= 0; i--) {
+      var d = addDays(TODAY, -i), r = knees[d], x = r ? num(r.dolor) : null, el = document.createElement("div");
+      el.className = "kn-d" + (i === 0 ? " kn-now" : ""); el.title = fmtDate(d) + (x === null ? ": sin dato" : ": " + x + "/10");
+      var bar = document.createElement("i"); if (x !== null) { var f = document.createElement("b"); f.style.height = Math.max(6, x * 10) + "%"; f.style.setProperty("--kc", KN_COLOR(x)); bar.appendChild(f); }
+      var lab = document.createElement("span"); lab.textContent = x === null ? "·" : x;
+      var dd = document.createElement("span"); dd.textContent = ["D", "L", "M", "X", "J", "V", "S"][new Date(d + "T12:00:00").getDay()];
+      el.appendChild(bar); el.appendChild(lab); el.appendChild(dd); knStrip.appendChild(el);
+    }
+  }
+  knBtns.addEventListener("click", function (ev) {
+    var b = ev.target.closest("button"); if (!b || b.disabled || !db) return;
+    var v = +b.getAttribute("data-v"), prev = knees[TODAY];
+    knees[TODAY] = { fecha: TODAY, dolor: v, updatedAt: new Date().toISOString() }; renderKnee(); renderStats(); setSync("Guardando…", "busy");
+    db.doc("rodilla/" + TODAY).set(knees[TODAY]).then(function () { setSync("Guardado en tu cuenta · Claude puede leer tu registro", "ok"); })
+      .catch(function () { if (prev) knees[TODAY] = prev; else delete knees[TODAY]; renderKnee(); setSync("No se pudo guardar el chequeo de rodilla. Revisa tu conexión.", "err"); });
+  });
+  renderKnee();
   mf.save.addEventListener("click", function () {
     if (!db || !canWrite || mf.save.disabled) return;
     var f = mf.fecha.value;
     if (!/^\d{4}-\d{2}-\d{2}$/.test(f) || f > TODAY) { mf.status.textContent = "Elige la fecha del partido (hoy o antes)."; return; }
     var before = compute(allDocs()), lvB = levelOf(before.xp), isNew = !matches[f];
     var body = { fecha: f, minutos: clampN(mf.min.value, 0, 130), goles: clampN(mf.gol.value, 0, 20), asistencias: clampN(mf.asi.value, 0, 20),
-      rpe: clampN(mf.rpe.value, 1, 10), piernas: clampN(mf.pier.value, 1, 5), notas: String(mf.notas.value || "").slice(0, 200), updatedAt: new Date().toISOString() };
+      rpe: clampN(mf.rpe.value, 1, 10), piernas: clampN(mf.pier.value, 1, 5), formato: clampN(mf.fmt.value, 6, 11),
+      rodilla: mf.rod.value === "" ? null : clampN(mf.rod.value, 0, 10), notas: String(mf.notas.value || "").slice(0, 200), updatedAt: new Date().toISOString() };
     var prev = matches[f]; matches[f] = body;
     var after = compute(allDocs()), lvA = levelOf(after.xp);
     renderStats(); mf.save.disabled = true; setSync("Guardando…", "busy");
@@ -635,6 +670,11 @@
         if (!matchesLoaded) { matchesLoaded = true; fillMatchForm(); }
         renderStats();
       }, function () { setSync("Se perdió la conexión con tus partidos. Recarga la página para reintentar.", "err"); });
+      db.collection("rodilla").onSnapshot(function (snap) {
+        knees = {};
+        snap.docs.forEach(function (doc) { if (doc.exists) knees[doc.id] = doc.data(); });
+        kneesLoaded = true; renderKnee(); renderStats();
+      }, function () { setSync("Se perdió la conexión con el chequeo de rodilla. Recarga la página.", "err"); });
     });
   });
 })();

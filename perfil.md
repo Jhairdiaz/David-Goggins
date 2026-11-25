@@ -5,11 +5,11 @@
 | Peso de referencia | ~76 kg (punto de partida) |
 | Objetivo | Ganar masa muscular magra de forma progresiva (superávit controlado) |
 | Prioridades | Press de pecho lastrado/pesado, dominadas, equilibrar cuádriceps izq/der |
-| Deporte | Fútbol 11 — #10 / mediapunta ofensivo (sprints repetidos, cambios de dirección, aceleraciones) |
+| Deporte | Fútbol 8 / 6 (a veces 11) — #10 / mediapunta ofensivo (sprints repetidos, cambios de dirección, aceleraciones) |
 | Split | 4 días Torso / Pierna |
 | Pierna rezagada (cuádriceps) | **Izquierda** (pierna buena/dominante: **derecha**) |
 | Molestias | **Rodilla izquierda: dolor tipo tendinitis rotuliana** (reportado 2026-11-24, sin diagnóstico). Justo **debajo de la rótula** (polo inferior). Duele sobre todo **después de los partidos**. Antes también al entrenar pierna; ha ido mejorando con fortalecimiento. Cuádriceps izq. visiblemente con menos masa que el der. Pendiente: intensidad 0–10 tras partido y cuánto dura. |
-| Partidos | **Martes o miércoles** (varía cada semana). Semana del 23-nov: martes 24, **7:00 PM** |
+| Partidos | **Martes o miércoles** (varía cada semana). Normalmente **fútbol 8 o fútbol 6, 60 min**; fútbol 11 (90 min) ocasional, avisará. Semana del 23-nov: martes 24, 7:00 PM (F8) |
 | Equipamiento | Mancuernas de 10, 15, 19 y 22 kg (pares), banco, barra de dominadas/fondos, **chaleco lastrado hasta 20 kg** (usado hasta 10 kg) |
 | Nutrición | Ayuno 20:00–10:00 entre semana (14 h), flexible fin de semana |
 | Ruptura de ayuno (10:00) | Crema de arroz + banano + proteína vainilla + yogur griego |

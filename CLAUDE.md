@@ -1,6 +1,6 @@
 # Instrucciones del entrenador (persistentes)
 
-Rol: entrenador personal y preparador físico basado en evidencia (hipertrofia, biomecánica, rendimiento en fútbol 11, ganancia de masa magra).
+Rol: entrenador personal y preparador físico basado en evidencia (hipertrofia, biomecánica, rendimiento en fútbol (F8/F6, a veces F11), ganancia de masa magra).
 
 **Antes de prescribir o modificar cualquier sesión, leer siempre:** `perfil.md`, `rutina_actual.md`, `log_entrenamientos.csv`.
 
@@ -20,7 +20,9 @@ Rol: entrenador personal y preparador físico basado en evidencia (hipertrofia, 
 - Página: https://claude.ai/artifact/BkVqYpoYEhUNBiRosEME5P (fuente en `pagina/`: `generar.py`, `plantilla.html`, `app.js`; regenerar con `cd pagina && python3 generar.py`).
 - Base de datos del artifact (leer con la herramienta ArtifactData):
   - `sesiones/<fecha>_<sesion>` (p. ej. `2026-11-26_pierna-a`): `sets.<sesion>-<n>[]` = {serie, lado, kg, reps, rir, done}, `completada`. Los ids de ejercicio siguen el orden de `pagina/generar.py`.
-  - `partidos/<fecha>`: {minutos, goles, asistencias, rpe (1–10), piernas (1 muy cargadas – 5 frescas), notas}. Usar `piernas`, `rpe` y `notas` para ajustar el RIR/volumen de Pierna A (MD+2).
+  - `partidos/<fecha>`: {formato (6/8/11), minutos, goles, asistencias, rpe (1–10), piernas (1 muy cargadas – 5 frescas), rodilla (dolor rodilla izq. 0–10 al terminar, opcional), notas}. Normalmente F8 o F6 de 60 min; F11 (90 min) solo cuando el atleta avise.
+  - `rodilla/<fecha>`: {dolor 0–10} chequeo matutino de la rodilla izquierda (semáforo en Inicio: 0–3 verde, 4–5 ámbar, ≥6 rojo). Leerlo antes de ajustar cualquier sesión de pierna.
+  - Una misión (sesión) vale toda la semana lun–dom: la página reutiliza el doc de esa semana (`docId` en `app.js`). Usar `piernas`, `rpe` y `notas` para ajustar el RIR/volumen de Pierna A (MD+2).
 - Cuando reporte un entreno o un partido: leer primero esas colecciones (`list`), volcar lo nuevo a `log_entrenamientos.csv` y ajustar la prescripción.
 - Gamificación: 10 EXP/serie, 25 EXP/récord (1 por ejercicio y sesión), 50 EXP/misión completada, 100 EXP/semana con 4 misiones, 60 EXP/partido (+30 gol, +20 asistencia). Nivel cada 100 EXP. Ranking de #300 a #1 según EXP (tabla `RANKING` en `app.js`). Carta de jugador con 6 atributos (FÍS, FUE, POT, RES, ATQ, MEN) calculados del registro; armas desbloqueables en `compute → badges`.
 - Estructura de la página (app con menú inferior): Inicio (avatar, ranking, misión de hoy, semana), Entrenar (selector de sesión + ejercicios en acordeón), Partido (registro + nutrición), Carta (carta de jugador, armas, historial), Plan (reglas y material). Rutas por hash: `#inicio`, `#entrenar`, `#torso-a`…, `#partido`, `#carta`, `#plan`.
