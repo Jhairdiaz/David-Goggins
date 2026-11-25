@@ -73,6 +73,11 @@ Los partidos son martes o miércoles, así que la semana se organiza **contando 
 | 4 | Peso muerto rumano (2×22 kg) | 3 | 10–15 | 2 | 2:00 | Cadera atrás, tempo 3-1-1-0, estiramiento de isquios |
 | 5 | Gemelo de pie unilateral (22 kg) | 3/lado | 10–15 | 1 | 1:00 | Pausa 2 s abajo en estiramiento máximo |
 
+### Partido 24-nov (MD) → decisión para Pierna A del jueves 26 (MD+2)
+60 min · 2 G · 4 A · RPE 8 · piernas 3/5 · rodilla izq. con poco dolor al terminar.
+- Fatiga moderada (piernas 3/5, RPE 8): Pierna A **completa** con el ajuste de rodilla. Si el jueves la rodilla está > 3/10 o las piernas siguen cargadas: RIR +1 y quitar la última serie de cada ejercicio (la serie extra de la izquierda se mantiene si la rodilla lo permite).
+- Pendiente: cómo amanece la rodilla el 25 y el 26.
+
 ### Ajuste de Pierna A por la rodilla izquierda (tipo tendinitis rotuliana, 24-nov) — aplicado en la página
 *Dolor bajo la rótula, sobre todo tras partidos; el entreno de pierna ya se tolera mejor. Semana 1 conservadora; si el jueves va ≤2/10 y no empeora al día siguiente, vuelven los talones elevados.*
 *Rutina extra: sentadilla en pared 4×30–45 s antes del partido (en el calentamiento) y en días sin pierna si molesta.*

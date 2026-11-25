@@ -70,7 +70,19 @@
   var db = null, canWrite = false, loaded = false, remote = {}, drafts = {}, matches = {}, matchesLoaded = false;
   var syncEl = $("#sync");
   function setSync(text, kind) { syncEl.textContent = text; syncEl.setAttribute("data-kind", kind || ""); }
-  function docId(sid) { return TODAY + "_" + sid; }
+  function hasDone(d) { var s = (d && d.sets) || {}; return Object.keys(s).some(function (ex) { return (s[ex] || []).some(function (r) { return r && r.done; }); }); }
+  /* La misión vale para toda la semana (lun–dom): si ya la empezaste o completaste
+     otro día de esta semana, se abre ese registro en lugar de uno nuevo y vacío. */
+  function docId(sid) {
+    var wk = weekKey(TODAY), best = null, bestScore = 0;
+    Object.keys(remote).forEach(function (k) {
+      var f = k.slice(0, 10), d = remote[k];
+      if (k.slice(11) !== sid || f < wk || f > TODAY || !d) return;
+      var sc = d.completada ? 3 : hasDone(d) ? 2 : 0;
+      if (sc > bestScore || (sc && sc === bestScore && f > best.slice(0, 10))) { best = k; bestScore = sc; }
+    });
+    return best || TODAY + "_" + sid;
+  }
   function draftFor(sid) {
     if (!drafts[sid]) {
       var r = remote[docId(sid)];
@@ -128,12 +140,17 @@
     var fullWeek = Object.keys(weeks).some(function (w) { return weeks[w] >= WEEK_GOAL; });
     var torso = 0, pierna = 0;
     list.forEach(function (d) { var s = d.sets || {}; Object.keys(s).forEach(function (ex) { var n = (s[ex] || []).filter(function (r) { return r && r.done; }).length; if (ex.indexOf("torso") === 0) torso += n; else pierna += n; }); });
-    var mins = 0, goals = 0, assists = 0, mcount = 0, mper = {}, matchWeek = null;
+    var mins = 0, goals = 0, assists = 0, mcount = 0, mper = {}, matchWeek = null, maxG = 0, maxA = 0, maxGA = 0, golYPase = false, full90 = false, gRun = 0, gRunMax = 0, completoSemana = false;
     Object.keys(matches).sort().forEach(function (k) {
       var m = matches[k]; if (!m || !m.fecha) return;
       var mx = XP_MATCH + XP_GOAL * num(m.goles) + XP_ASSIST * num(m.asistencias);
       xp += mx; mins += num(m.minutos); goals += num(m.goles); assists += num(m.asistencias); mcount++;
       mper[m.fecha] = { xp: mx, doc: m };
+      var g = num(m.goles), a = num(m.asistencias);
+      maxG = Math.max(maxG, g); maxA = Math.max(maxA, a); maxGA = Math.max(maxGA, g + a);
+      if (g >= 1 && a >= 1) golYPase = true; if (num(m.minutos) >= 90) full90 = true;
+      gRun = g >= 1 ? gRun + 1 : 0; gRunMax = Math.max(gRunMax, gRun);
+      if ((weeks[weekKey(m.fecha)] || 0) >= WEEK_GOAL) completoSemana = true;
       if (weekKey(m.fecha) === cur) matchWeek = mper[m.fecha];
     });
     var badges = [
@@ -148,7 +165,18 @@
       { id: "motor", name: "Motor", desc: "300 minutos jugados", ok: mins >= 300 },
       { id: "racha3", name: "Imparable", desc: "3 semanas perfectas seguidas", ok: streak >= 3 },
       { id: "cien", name: "Cien series", desc: "Registra 100 series", ok: sets >= 100 },
-      { id: "diez", name: "Diez récords", desc: "Suma 10 récords personales", ok: prs >= 10 }
+      { id: "diez", name: "Diez récords", desc: "Suma 10 récords personales", ok: prs >= 10 },
+      { id: "doblete", name: "Doblete", desc: "2 goles en un partido", ok: maxG >= 2 },
+      { id: "hat", name: "Hat-trick", desc: "3 goles en un partido", ok: maxG >= 3 },
+      { id: "golpase", name: "Gol y pase", desc: "Gol y asistencia en el mismo partido", ok: golYPase },
+      { id: "cerebro", name: "Cerebro del equipo", desc: "3 asistencias en un partido", ok: maxA >= 3 },
+      { id: "crack", name: "Partido de 10", desc: "Participa en 5 goles en un partido (G + A)", ok: maxGA >= 5 },
+      { id: "racha", name: "Racha goleadora", desc: "Marca en 3 partidos seguidos", ok: gRunMax >= 3 },
+      { id: "g10", name: "Diez goles", desc: "Suma 10 goles", ok: goals >= 10 },
+      { id: "a10", name: "Diez asistencias", desc: "Suma 10 asistencias", ok: assists >= 10 },
+      { id: "noventa", name: "Noventa minutos", desc: "Juega un partido completo (90')", ok: full90 },
+      { id: "fijo", name: "Titular fijo", desc: "Registra 10 partidos", ok: mcount >= 10 },
+      { id: "completo", name: "Atleta completo", desc: "Semana perfecta con partido incluido", ok: completoSemana }
     ];
     function cap(v) { return Math.min(99, v); }
     var attrs = [
