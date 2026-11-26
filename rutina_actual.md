@@ -69,7 +69,7 @@ Los partidos son martes o miércoles, así que la semana se organiza **contando 
 |---|---|---|---|---|---|---|
 | 1 | Sentadilla búlgara (2×19 → 2×22 kg) | **[R] 4 / fuerte 3** | 8–12 | 1–2 | 2:00 entre lados | Pie trasero en banco, rodilla delantera avanza sobre la punta, torso ligeramente erguido = más cuádriceps. Empieza [R]; la fuerte iguala reps |
 | 2 | Sentadilla goblet talones elevados (22 kg) | 3 | 12–20 | 1–2 | 2:00 | Talones sobre discos/tabla 2–3 cm, tempo **3-1-1-0**. Mayor flexión de rodilla = más estímulo de cuádriceps con carga baja |
-| 3 | Step-up al banco (2×19 kg) | 2/lado | 8–12 | 2 | 1:30 | [R] primero. Sin impulso de la pierna de abajo |
+| 3 | Split squat estático con pausa (2×19 kg) | 2/lado | 8–12 | 2 | 1:30 | [R] primero. Sustituye al step-up por espacio. Pausa 1 s abajo |
 | 4 | Peso muerto rumano (2×22 kg) | 3 | 10–15 | 2 | 2:00 | Cadera atrás, tempo 3-1-1-0, estiramiento de isquios |
 | 5 | Gemelo de pie unilateral (22 kg) | 3/lado | 10–15 | 1 | 1:00 | Pausa 2 s abajo en estiramiento máximo |
 
@@ -90,7 +90,7 @@ Los partidos son martes o miércoles, así que la semana se organiza **contando 
 | Calentamiento: **quitar los saltos al cajón**. Añadir **isométrico**: sentadilla en pared 4–5 × 30–45 s (profundidad con dolor ≤ 3/10), 1–2 min de descanso | Los saltos son la carga más alta para el tendón rotuliano. Los isométricos permiten cargar el tendón con buena tolerancia |
 | Sentadilla búlgara: tempo **3-0-3** (lento subiendo y bajando), rango hasta donde el dolor sea ≤ 3/10. Izquierda primero; su serie extra solo si la regla del dolor lo permite | Carga lenta y pesada: el enfoque con mejor respaldo para tendinopatía rotuliana, y sigue trabajando el cuádriceps izquierdo |
 | Goblet con talones elevados → **sentadilla goblet al banco** (22 kg, tempo 3-1-3) | Talones elevados + flexión profunda = máxima carga en el tendón rotuliano. Al banco se controla la profundidad |
-| Step-up: tempo 3-0-2, sin impulso | Bien tolerado y regulable con la altura del banco |
+| Step-up → **split squat estático con pausa** (2×19 kg, 3-1-2-0, 2/lado) | Falta de espacio en casa (26-nov). Cabe en 1 m², mismo patrón unilateral, izquierda primero |
 | Peso muerto rumano y gemelos: sin cambios | No cargan el tendón rotuliano |
 
 ## TORSO B
@@ -125,7 +125,7 @@ Los partidos son martes o miércoles, así que la semana se organiza **contando 
 |---|---|---|---|
 | Pierna A | Sentadilla búlgara | Izq 4×12 | 2×22 kg |
 | Pierna A | Goblet talones elevados | 3×20 | Bajada de 4 s |
-| Pierna A | Step-up | 2×12 | 2×22 kg |
+| Pierna A | Split squat estático con pausa | 2×12 | 2×22 kg |
 | Pierna A | Peso muerto rumano | 3×15 | Bajada de 4 s |
 | Pierna A | Gemelo de pie unilateral | 3×15 | Pausa de 3 s abajo |
 | Torso B | Fondos lastrados | 4×10 | +2,5–5 kg en el chaleco |
